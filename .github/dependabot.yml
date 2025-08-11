@@ -43,7 +43,8 @@ updates:
           - "*"
   - package-ecosystem: "nuget"
     directories:
-    - "/exercisefiles/dotnet/"
+    - "/exercisefiles/dotnet/MinimalAPI/"
+    - "/exercisefiles/dotnet/MinimalAPI.Tests/"
     schedule:
       interval: "monthly"
     groups:
