@@ -1,11 +1,9 @@
 {
-  "name": "Typescript",
-  "image": "mcr.microsoft.com/devcontainers/typescript-node",
-  "workspaceFolder": "/workspaces/${localWorkspaceFolderBasename}/exercisefiles/typescript",
+  "$schema": "https://raw.githubusercontent.com/devcontainers/spec/main/schemas/devContainer.schema.json",
+  "name": "Technology - Go",
+  "image": "mcr.microsoft.com/devcontainers/go",
+  "workspaceFolder": "/workspaces/${localWorkspaceFolderBasename}/src/",
   "forwardPorts": [3000],
-  "postCreateCommand": "npm install && npm install -g mocha",
-
-  // Configure tool-specific properties.
   "customizations": {
     "vscode": {
       "settings": {
@@ -14,14 +12,19 @@
         "git.openRepositoryInParentFolders": "never",
         "workbench.welcomePage.walkthroughs.openOnInstall": false
       },
+      "openFiles": ["README.md"],
       "extensions": [
         // GitHub
         "GitHub.copilot",
         "GitHub.copilot-chat",
 
         // Specific language support
-        "hbenl.vscode-mocha-test-adapter"
+        "golang.go",
+        "ms-vscode.go",
+        "ms-vscode.vscode-go",
+        "babakks.vscode-go-test-suite"
       ]
     }
-  }
+  },
+  "remoteUser": "root"
 }

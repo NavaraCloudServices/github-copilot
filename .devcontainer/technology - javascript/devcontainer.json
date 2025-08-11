@@ -1,10 +1,9 @@
 {
-  "name": "Javascript",
+  "name": "Technology - Javascript",
   "image": "mcr.microsoft.com/devcontainers/javascript-node",
-  "workspaceFolder": "/workspaces/${localWorkspaceFolderBasename}/exercisefiles/javascript",
+  "workspaceFolder": "/workspaces/${localWorkspaceFolderBasename}/src/",
   "forwardPorts": [3000],
-  "postCreateCommand": "npm install && npm install -g mocha",
-
+  "postCreateCommand": "npm install -g mocha",
   // Configure tool-specific properties.
   "customizations": {
     "vscode": {

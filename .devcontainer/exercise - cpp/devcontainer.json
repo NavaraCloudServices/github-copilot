@@ -1,7 +1,6 @@
 {
   "$schema": "https://raw.githubusercontent.com/devcontainers/spec/main/schemas/devContainer.schema.json",
-
-  "name": "C++",
+  "name": "Exercises - C++",
   "build": {
     "dockerfile": "Dockerfile"
   },

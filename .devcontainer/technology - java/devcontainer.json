@@ -1,0 +1,37 @@
+{
+  "name": "Technology - Java",
+  "image": "mcr.microsoft.com/devcontainers/java",
+  "workspaceFolder": "/workspaces/${localWorkspaceFolderBasename}/src/",
+  "features": {
+    "ghcr.io/devcontainers/features/java:1": {
+      "version": "none",
+      "installMaven": "true"
+    }
+  },
+  "forwardPorts": [3000],
+  // Configure tool-specific properties.
+  "customizations": {
+    "vscode": {
+      "settings": {
+        "workbench.startupEditor": "none",
+        "git.autoRepositoryDetection": false,
+        "git.openRepositoryInParentFolders": "never",
+        "java.help.showReleaseNotes": false,
+        "java.help.firstView": "none",
+        "workbench.welcomePage.walkthroughs.openOnInstall": false,
+        "redhat.telemetry.enabled": false,
+        "workbench.settings.applyToAllProfiles": ["workbench.startupEditor"],
+        "java.configuration.detectJdksAtStart": true
+      },
+      "openFiles": ["README.md"],
+      "extensions": [
+        // GitHub
+        "GitHub.copilot",
+        "GitHub.copilot-chat",
+
+        // Specific language support
+        "vscjava.vscode-java-pack"
+      ]
+    }
+  }
+}

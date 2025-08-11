@@ -1,0 +1,30 @@
+{
+  "$schema": "https://raw.githubusercontent.com/devcontainers/spec/main/schemas/devContainer.schema.json",
+  "name": "Exercises - C# (.NET)",
+  "image": "mcr.microsoft.com/devcontainers/dotnet",
+  "workspaceFolder": "/workspaces/${localWorkspaceFolderBasename}/exercisefiles/dotnet/",
+  "forwardPorts": [3000],
+  "postCreateCommand": "dotnet restore",
+  "customizations": {
+    "vscode": {
+      "settings": {
+        "workbench.startupEditor": "none",
+        "git.openRepositoryInParentFolders": "never",
+        "git.autoRepositoryDetection": false,
+        "workbench.welcomePage.walkthroughs.openOnInstall": false
+      },
+      "openFiles": ["README.md"],
+      "extensions": [
+        // GitHub
+        "GitHub.copilot",
+        "GitHub.copilot-chat",
+
+        // Specific language support
+        "ms-dotnettools.csharp",
+        "ms-dotnettools.csdevkit",
+        "ms-dotnettools.vscode-dotnet-runtime"
+      ]
+    }
+  },
+  "remoteUser": "root"
+}

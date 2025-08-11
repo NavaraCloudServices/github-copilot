@@ -1,8 +1,8 @@
 {
-  "name": "Data Engineer/Scientist (Python 3)",
+  "name": "Exercises - Python 3",
   "image": "mcr.microsoft.com/devcontainers/python:3",
 
-  "workspaceFolder": "/workspaces/${localWorkspaceFolderBasename}/exercisefiles/data_engineering/",
+  "workspaceFolder": "/workspaces/${localWorkspaceFolderBasename}/exercisefiles/python/",
   "forwardPorts": [3000],
   "postCreateCommand": "pip install --upgrade pip && pip install --user -r requirements.txt",
   "customizations": {
@@ -26,10 +26,7 @@
         "kevinrose.vsc-python-indent",
 
         // General language support
-        "mechatroner.rainbow-csv",
-
-        "ms-toolsai.jupyter",
-        "ms-python.pylance"
+        "mechatroner.rainbow-csv"
       ]
     }
   }

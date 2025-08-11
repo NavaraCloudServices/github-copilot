@@ -1,11 +1,8 @@
 {
   "$schema": "https://raw.githubusercontent.com/devcontainers/spec/main/schemas/devContainer.schema.json",
-
-  "name": "Go",
+  "name": "Exercises - Go",
   "image": "mcr.microsoft.com/devcontainers/go",
-
   "workspaceFolder": "/workspaces/${localWorkspaceFolderBasename}/exercisefiles/go/",
-
   "forwardPorts": [3000],
   "customizations": {
     "vscode": {

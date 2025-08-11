@@ -1,0 +1,47 @@
+{
+  "$schema": "https://raw.githubusercontent.com/devcontainers/spec/main/schemas/devContainer.schema.json",
+
+  "name": "Technology - DevOps",
+  "image": "mcr.microsoft.com/devcontainers/base",
+  "postCreateCommand": "curl --proto '=https' --tlsv1.2 -fsSL https://get.opentofu.org/install-opentofu.sh -o install-opentofu.sh && chmod +x install-opentofu.sh && ./install-opentofu.sh --install-method deb && rm -f install-opentofu.sh",
+  "workspaceFolder": "/workspaces/${localWorkspaceFolderBasename}/src/",
+  "features": {
+    "ghcr.io/devcontainers/features/aws-cli:1": {},
+    "ghcr.io/devcontainers/features/azure-cli:1": {},
+    "ghcr.io/devcontainers/features/powershell:1": {},
+    "ghcr.io/devcontainers/features/terraform:1": {},
+    "ghcr.io/devcontainers/features/go:1": {},
+    "ghcr.io/rchaganti/vsc-devcontainer-features/azurebicep:1": {}
+
+  },
+  "customizations": {
+    "vscode": {
+      "settings": {
+        "workbench.startupEditor": "none",
+        "git.openRepositoryInParentFolders": "never",
+        "git.autoRepositoryDetection": false,
+        "workbench.welcomePage.walkthroughs.openOnInstall": false,
+        "aws.telemetry": false,
+        
+      },
+      "openFiles": ["README.md"],
+      "extensions": [
+        // GitHub
+        "GitHub.copilot",
+        "GitHub.copilot-chat",
+
+        // Specific tool support
+        "hashicorp.terraform",
+        "ms-azuretools.vscode-bicep",
+        "ms-vscode.powershell",
+        "github.vscode-github-actions",
+				"golang.go",
+				"ms-vscode.go",
+				"ms-vscode.vscode-go",
+				"babakks.vscode-go-test-suite"
+
+      ]
+    }
+  },
+  "remoteUser": "root"
+}

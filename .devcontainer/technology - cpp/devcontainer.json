@@ -1,0 +1,41 @@
+{
+  "$schema": "https://raw.githubusercontent.com/devcontainers/spec/main/schemas/devContainer.schema.json",
+
+  "name": "Technology - C++",
+  "build": {
+    "dockerfile": "Dockerfile"
+  },
+  "workspaceFolder": "/workspaces/${localWorkspaceFolderBasename}/src/",
+  "postCreateCommand": "conan profile detect",
+  "forwardPorts": [3000],
+  "customizations": {
+    "vscode": {
+      "settings": {
+        "cmake.sourceDirectory": "${workspaceFolder}/src",
+        "terminal.integrated.shell.linux": "/bin/bash",
+        "C_Cpp.default.includePath": ["~/.conan/data/**", "${default}"],
+        "C_Cpp.default.configurationProvider": "ms-vscode.cmake-tools",
+        "workbench.startupEditor": "none",
+        "git.autoRepositoryDetection": false,
+        "git.openRepositoryInParentFolders": "never",
+        "workbench.welcomePage.walkthroughs.openOnInstall": false,
+        "C_Cpp.default.cppStandard": "c++17",
+        "cmake.ctest.testExplorerIntegrationEnabled": false,
+        "C_Cpp.default.conanProfile": "Conan"
+      },
+      "openFiles": ["README.md"],
+      "extensions": [
+        // GitHub
+        "GitHub.copilot",
+        "GitHub.copilot-chat",
+
+        // Specific language support
+        "ms-vscode.cpptools",
+        "ms-vscode.cpptools-extension-pack",
+        "ms-vscode.cmake-tools",
+        "matepek.vscode-catch2-test-adapter"
+      ]
+    }
+  },
+  "remoteUser": "root"
+}

@@ -1,9 +1,7 @@
 {
-  "name": "Java",
+  "name": "Exercises - Java",
   "image": "mcr.microsoft.com/devcontainers/java",
-
   "workspaceFolder": "/workspaces/${localWorkspaceFolderBasename}/exercisefiles/java/",
-
   "features": {
     "ghcr.io/devcontainers/features/java:1": {
       "version": "none",

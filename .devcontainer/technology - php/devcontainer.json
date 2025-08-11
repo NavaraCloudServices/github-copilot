@@ -1,0 +1,30 @@
+{
+  "name": "Technology - PHP",
+  "image": "mcr.microsoft.com/devcontainers/php",
+  "workspaceFolder": "/workspaces/${localWorkspaceFolderBasename}/src/",
+  "features": {
+    "ghcr.io/devcontainers-extra/features/composer:1": {}
+  },
+  "forwardPorts": [3000],
+  // Configure tool-specific properties.
+  "customizations": {
+    "vscode": {
+      "settings": {
+		"workbench.startupEditor": "none",
+        "git.autoRepositoryDetection": false,
+		"git.openRepositoryInParentFolders": "never",
+        "workbench.welcomePage.walkthroughs.openOnInstall": false
+      },
+      "openFiles": ["README.md"],
+      "extensions": [
+        // GitHub
+        "GitHub.copilot",
+        "GitHub.copilot-chat",
+
+        // Specific language support
+        "xdebug.php-pack",
+		"recca0120.vscode-phpunit"
+      ]
+    }
+  }
+}

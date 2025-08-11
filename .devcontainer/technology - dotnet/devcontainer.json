@@ -1,15 +1,10 @@
 {
   "$schema": "https://raw.githubusercontent.com/devcontainers/spec/main/schemas/devContainer.schema.json",
-
-  "name": "C# (.NET)",
+  "name": "Technology - C# (.NET)",
   "image": "mcr.microsoft.com/devcontainers/dotnet",
-
-  "workspaceFolder": "/workspaces/${localWorkspaceFolderBasename}/exercisefiles/dotnet/",
-
+  "workspaceFolder": "/workspaces/${localWorkspaceFolderBasename}/src/",
   "forwardPorts": [3000],
-
   "postCreateCommand": "dotnet restore",
-
   "customizations": {
     "vscode": {
       "settings": {

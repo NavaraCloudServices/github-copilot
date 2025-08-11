@@ -1,10 +1,8 @@
 {
-  "name": "Python 3",
+  "name": "Technology - Python 3",
   "image": "mcr.microsoft.com/devcontainers/python:3",
-
-  "workspaceFolder": "/workspaces/${localWorkspaceFolderBasename}/exercisefiles/python/",
+  "workspaceFolder": "/workspaces/${localWorkspaceFolderBasename}/src/",
   "forwardPorts": [3000],
-  "postCreateCommand": "pip install --upgrade pip && pip install --user -r requirements.txt",
   "customizations": {
     "vscode": {
       "settings": {
