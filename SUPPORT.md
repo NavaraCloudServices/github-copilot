@@ -2,7 +2,7 @@
 
 ## Forked
 
-This repository is forked from https://github.com/microsoft/CopilotHackathon
+This repository is forked from https://github.com/microsoft/CopilotHackathon and we added a lot of new features and improvements.
 
 ## How to file issues and get help
 

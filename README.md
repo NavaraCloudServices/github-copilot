@@ -1,4 +1,4 @@
-![alt text](Resources/navara/banner.png)
+![alt text](images/navara_banner.png)
 
 # GitHub Copilot Ground School
 
