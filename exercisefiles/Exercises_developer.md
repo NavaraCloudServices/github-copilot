@@ -9,7 +9,7 @@ Try different things and see what GitHub Copilot can do for you, like generating
 
 ## Exercises
 
-### Exercise 1: Introduction
+### Exercise 1: Introduction basic completion
 
 > The goal of this exercise is to get acquainted with the project files, use basic GitHub Copilot Suggestions/Completion and run the HTTP server and its tests. After this we will start exploring GitHub Copilot features. 
 

@@ -4,5 +4,6 @@
 # if the name is passed, return "hello " + key
 # if the url has other methods, return "method not implemented"
 # when server is listening, log "server is listening on port 3000"
+# make sure that the server is listening on the start of the application
 
 from flask import Flask, request
