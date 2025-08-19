@@ -26,7 +26,7 @@ variable "postgresql_admin_password" {
   sensitive   = true
 }
 
-variable "container_image" {
-  description = "The Docker container image to deploy"
+variable "acr_login_server" {
+  description = "The Azure Container Registry login server"
   type        = string
 }
