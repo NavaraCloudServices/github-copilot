@@ -15,14 +15,14 @@ We have demonstrated GitHub Copilot's main features; however,
 - The features are tool features, not capabilities (what you do and why you use them)
 - Now it is time to discover what GitHub Copilot can do for you!
 
-**What are we going to do**
+**What are we going to do?**
 
 - You will start exploring GitHub Copilot's capabilities in your chosen project.
 - You will apply what you've learned in a practical setting.
 - Use your project (work- or hobby-related) as a playground.
 - Just start coding as you normally would and experiment with how GitHub Copilot can assist you.
 
-**How are we going to do it**
+**How are we going to do it?**
 
 - You can work alone or in pairs (we recommend this)
 - Go to our [Leaderboard app](https://ca-leaderboard-prd.livelyplant-1fbb6cbd.westeurope.azurecontainerapps.io/)
