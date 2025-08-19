@@ -15,8 +15,6 @@ on:
       - "hackathon/leaderboard/**"
       - "!hackathon/leaderboard/terraform/**"
 
-concurrency: workflow
-
 permissions:
   id-token: write
   contents: read
