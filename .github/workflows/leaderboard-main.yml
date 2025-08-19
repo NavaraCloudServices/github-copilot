@@ -60,8 +60,7 @@ jobs:
       - name: Show Tofu plan
         run: |
           tofu show tofu.plan
-
-      # Apply the plan, but only if the flag is true
+          
       - name: Run Tofu apply
         run: |
           tofu apply -auto-approve tofu.plan
