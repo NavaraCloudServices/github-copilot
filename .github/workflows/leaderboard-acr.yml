@@ -53,11 +53,11 @@ jobs:
         run: |
           cp hackathon/goals.json hackathon/leaderboard/goals.json
 
-      - name: Build Docker image
+      - name: Build Docker images
         run: |
           cd hackathon/leaderboard
           docker build -f Dockerfile.production -t ${{ secrets.ACR_LOGIN_SERVER }}/leaderboard:latest .
 
-      - name: Push Docker image
+      - name: Push Docker images
         run: |
           docker push ${{ secrets.ACR_LOGIN_SERVER }}/leaderboard:latest

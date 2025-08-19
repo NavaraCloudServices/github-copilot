@@ -153,7 +153,7 @@ resource "azurerm_container_app" "main" {
 
     container {
       name   = "leaderboard"
-      image  = var.container_image
+      image  = "${var.acr_login_server}/leaderboard:latest"
       cpu    = 0.5
       memory = "1Gi"
 
