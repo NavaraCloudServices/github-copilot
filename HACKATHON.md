@@ -24,10 +24,14 @@ We have demonstrated GitHub Copilot's main features; however,
 
 **How are we going to do it**
 
-- Work in pairs if applicable.
-- In our repository, you will find a [GOALS.md](./hackathon/GOALS.md) file that contains activities.
-- Use the activities as a scorecard to track your progress.
-- Use our scorecard template to document your achievements.
+- You can work alone or in pairs (we recommend this)
+- Go to our [Leaderboard app](https://ca-leaderboard-prd.livelyplant-1fbb6cbd.westeurope.azurecontainerapps.io/)
+- Join a Competition using the 'Access Code' provided. Name your team and add team members
+- Use the app to track your Challenges. 
+- Challenges are capabilities for what you can do with GitHub Copilot. Let the Challenges guide your exploration!
+
+>You can cheat but is that fun? It is about learning.
+
 
 ## If you did not bring your own code
 
