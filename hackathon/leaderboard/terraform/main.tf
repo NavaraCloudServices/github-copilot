@@ -1,4 +1,10 @@
 terraform {
+  backend "azurerm" {
+    storage_account_name = env("BACKEND_STORAGE_ACCOUNT")
+    container_name       = env("BACKEND_CONTAINER")
+    key                  = env("BACKEND_KEY")
+    resource_group_name  = env("BACKEND_RESOURCE_GROUP_NAME")
+  }
   required_providers {
     azurerm = {
       source  = "hashicorp/azurerm"
@@ -89,7 +95,7 @@ resource "azurerm_storage_account" "main" {
 
 resource "azurerm_storage_container" "main" {
   name                  = "challenges"
-  storage_account_name  = azurerm_storage_account.main.name
+  storage_account_id    = azurerm_storage_account.main.id
   container_access_type = "private"
 }
 
