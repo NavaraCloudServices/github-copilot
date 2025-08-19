@@ -30,11 +30,11 @@ resource "azurerm_resource_group" "main" {
 }
 
 resource "azurerm_container_registry" "main" {
-  name                = "acracaleaderboard${var.environment}"
-  resource_group_name = azurerm_resource_group.main.name
-  location            = azurerm_resource_group.main.location
-  sku                 = "Basic"
-  admin_enabled       = true
+  name                          = "acracaleaderboard${var.environment}"
+  resource_group_name           = azurerm_resource_group.main.name
+  location                      = azurerm_resource_group.main.location
+  sku                           = "Basic"
+  admin_enabled                 = true
   public_network_access_enabled = true
 
   lifecycle {
@@ -43,18 +43,18 @@ resource "azurerm_container_registry" "main" {
 }
 
 resource "azurerm_postgresql_flexible_server" "main" {
-  name                   = "psql-leaderboard-${var.environment}"
-  resource_group_name    = azurerm_resource_group.main.name
-  location               = azurerm_resource_group.main.location
-  version                = "14"
-  administrator_login    = var.postgresql_admin_username
-  administrator_password = var.postgresql_admin_password
-  zone                   = "1"
-  storage_mb             = 32768
-  sku_name               = "B_Standard_B1ms"
+  name                          = "psql-leaderboard-${var.environment}"
+  resource_group_name           = azurerm_resource_group.main.name
+  location                      = azurerm_resource_group.main.location
+  version                       = "14"
+  administrator_login           = var.postgresql_admin_username
+  administrator_password        = var.postgresql_admin_password
+  zone                          = "1"
+  storage_mb                    = 32768
+  sku_name                      = "B_Standard_B1ms"
   public_network_access_enabled = true
 
-  backup_retention_days = 7
+  backup_retention_days        = 7
   geo_redundant_backup_enabled = false
 
   lifecycle {
@@ -204,8 +204,8 @@ resource "azurerm_container_app" "main" {
   }
 
   registry {
-    server   = azurerm_container_registry.main.login_server
-    username = azurerm_container_registry.main.admin_username
+    server               = azurerm_container_registry.main.login_server
+    username             = azurerm_container_registry.main.admin_username
     password_secret_name = "registry-password"
   }
 

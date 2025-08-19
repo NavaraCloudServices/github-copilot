@@ -6,8 +6,8 @@
 #container_image = "acracaleaderboarddev.azurecr.io/leaderboard:latest"
 
 
-environment = "prd"
-location = "Sweden Central"
+environment         = "prd"
+location            = "Sweden Central"
 resource_group_name = "rg-githubcopilot"
 #postgresql_admin_username = "main_user"
 #postgresql_admin_password = "onto-maverick-anthology"
