@@ -13,8 +13,8 @@ on:
       - "hackathon/leaderboard/terraform/**"
 
 permissions:
-  id-token: write 
-  contents: read 
+  id-token: write
+  contents: read
 
 env:
   ARM_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
@@ -24,7 +24,7 @@ env:
   TF_VAR_postgresql_admin_username: ${{ secrets.POSTGRES_LOGIN_USER }}
   TF_VAR_postgresql_admin_password: ${{ secrets.POSTGRES_LOGIN_PWD }}
   TF_VAR_acr_login_server: ${{ secrets.ACR_LOGIN_SERVER }}
-  
+
 defaults:
   run:
     working-directory: ./hackathon/leaderboard/terraform
@@ -55,7 +55,41 @@ jobs:
       - name: Show Tofu plan
         run: |
           tofu show
-          
+
       - name: Run Tofu apply
         run: |
           tofu apply -auto-approve
+
+      - name: Get PostgreSQL connection details
+        id: postgres_outputs
+        run: |
+          CONNECTION_STRING=$(tofu output -raw postgresql_connection_string)
+          FQDN=$(tofu output -raw postgresql_fqdn)
+          DB_NAME=$(tofu output -raw postgresql_database_name)
+          ADMIN_USERNAME=$(tofu output -raw postgresql_admin_username)
+
+          echo "connection_string=$CONNECTION_STRING" >> $GITHUB_OUTPUT
+          echo "fqdn=$FQDN" >> $GITHUB_OUTPUT
+          echo "db_name=$DB_NAME" >> $GITHUB_OUTPUT
+          echo "admin_username=$ADMIN_USERNAME" >> $GITHUB_OUTPUT
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "18"
+          cache: "npm"
+          cache-dependency-path: ./hackathon/leaderboard/package.json
+
+      - name: Install dependencies
+        run: |
+          cd ../
+          npm install
+        working-directory: ./hackathon/leaderboard/terraform
+
+      - name: Run database migration
+        env:
+          DATABASE_URL: ${{ steps.postgres_outputs.outputs.connection_string }}
+        run: |
+          cd ../
+          node scripts/migrate-to-postgresql.js
+        working-directory: ./hackathon/leaderboard/terraform
