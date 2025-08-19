@@ -21,7 +21,7 @@ resource "random_password" "session_secret" {
 }
 
 data "azurerm_resource_group" "main" {
-  name     = var.resource_group_name
+  name = var.resource_group_name
 }
 
 resource "azurerm_container_registry" "main" {
