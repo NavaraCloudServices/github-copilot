@@ -60,10 +60,7 @@ class LeaderboardServer {
     }
 
     // Security middleware
-    this.app.use(helmet({
-      contentSecurityPolicy: false,
-      crossOriginEmbedderPolicy: false
-    }));
+    this.app.use(helmet());
 
     // Rate limiting with appropriate trust proxy configuration
     const limiter = rateLimit({
