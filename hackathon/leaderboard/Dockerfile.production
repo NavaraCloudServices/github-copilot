@@ -9,23 +9,20 @@ RUN npm run build
 # Stage 2: Setup backend dependencies  
 FROM node:20-alpine AS backend-builder
 WORKDIR /app
-COPY package.json package-lock.json ./
-RUN npm ci
 COPY server/ ./server/
 
 # Stage 3: Final production image
 FROM node:20-alpine
 WORKDIR /app
 
-# Copy backend dependencies and source code
-COPY --from=backend-builder /app/node_modules ./node_modules
+# Copy backend source code
 COPY --from=backend-builder /app/server/ ./server
 
 # Copy frontend build output to the server's public directory
 COPY --from=frontend-builder /app/client/dist ./server/public
 
 # Copy sample challenges file
-COPY goals.json ./
+COPY /goals.json ./goals.json
 
 # Expose the port the app runs on
 EXPOSE 3000
