@@ -6,6 +6,10 @@ on:
       - main
       - feat/leaderboard
 
+permissions:
+  id-token: write
+  contents: read
+
 jobs:
   build-and-push:
     runs-on: ubuntu-latest

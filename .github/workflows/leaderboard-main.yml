@@ -25,7 +25,7 @@ env:
   ARM_USE_OIDC: true
   TF_VAR_postgresql_admin_username: ${{ secrets.POSTGRES_LOGIN_USER }}
   TF_VAR_postgresql_admin_password: ${{ secrets.POSTGRES_LOGIN_PWD }}
-  TF_VAR_acr_login_server: ${{ secrets.ACR_LOGIN_SERVER }}
+  TF_VAR_acr_login_server: ${{ secrets.ACR_LOGIN_SERVER }}/leaderboard:latest
   
 defaults:
   run:
