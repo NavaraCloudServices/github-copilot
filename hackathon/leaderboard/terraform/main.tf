@@ -1,10 +1,11 @@
 terraform {
   backend "azurerm" {
-    storage_account_name = env("BACKEND_STORAGE_ACCOUNT")
-    container_name       = env("BACKEND_CONTAINER")
-    key                  = env("BACKEND_KEY")
-    resource_group_name  = env("BACKEND_RESOURCE_GROUP_NAME")
+    storage_account_name = "tfstategithubcopilot"
+    container_name       = "tfstategithubcopilot"
+    key                  = "prd.tfstategithubcopilot.tfstate"
+    resource_group_name  = "rg-githubcopilot"
   }
+
   required_providers {
     azurerm = {
       source  = "hashicorp/azurerm"
