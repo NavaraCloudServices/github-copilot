@@ -1,0 +1,41 @@
+# Stage 1: Build the frontend
+FROM node:20-alpine AS frontend-builder
+WORKDIR /app/client
+COPY client/package.json client/package-lock.json ./
+RUN npm ci
+COPY client/ ./
+RUN npm run build
+
+# Stage 2: Setup backend dependencies  
+FROM node:20-alpine AS backend-builder
+WORKDIR /app
+COPY package.json package-lock.json ./
+RUN npm ci
+COPY server/ ./server/
+
+# Stage 3: Final production image
+FROM node:20-alpine
+WORKDIR /app
+
+# Copy backend dependencies and source code
+COPY --from=backend-builder /app/node_modules ./node_modules
+COPY --from=backend-builder /app/server/ ./server
+
+# Copy frontend build output to the server's public directory
+COPY --from=frontend-builder /app/client/dist ./server/public
+
+# Copy sample challenges file
+COPY sample-challenges.json ./
+
+# Expose the port the app runs on
+EXPOSE 3000
+
+# Set environment variables for production
+ENV NODE_ENV=production
+ENV PORT=3000
+
+# Health check (placeholder, will be implemented in application code)
+HEALTHCHECK --interval=30s --timeout=30s --start-period=5s --retries=3 CMD curl --fail http://localhost:3000/health || exit 1
+
+# Command to run the application
+CMD ["node", "server/index.js"]

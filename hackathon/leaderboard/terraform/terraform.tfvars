@@ -1,0 +1,6 @@
+environment = "dev"
+location = "Sweden Central"
+resource_group_name = "rg-abe.brandsma_ai"
+postgresql_admin_username = "main_user"
+postgresql_admin_password = "onto-maverick-anthology"
+container_image = "acracaleaderboarddev.azurecr.io/leaderboard:latest"

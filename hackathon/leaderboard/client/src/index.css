@@ -1,0 +1,63 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  
+  html {
+    scroll-behavior: smooth;
+  }
+  
+  body {
+    @apply bg-white text-github-dark-gray dark:bg-github-dark-gray dark:text-white;
+  }
+
+  h1, h2 {
+    @apply font-mirador font-semibold;
+  }
+
+  h3, h4, h5, h6 {
+    @apply font-sans font-semibold;
+  }
+
+  p, span, div {
+    @apply font-sans font-light;
+  }
+
+  /* Button and label text */
+  button, label, .ui-element {
+    @apply font-sans font-semibold;
+  }
+
+  /* Form elements */
+  .label {
+    @apply block text-sm font-semibold text-github-dark-gray dark:text-white;
+  }
+
+  .input {
+    @apply w-full px-3 py-2 border border-github-light-gray dark:border-gray-600 
+           rounded bg-white dark:bg-github-dark-gray 
+           text-github-dark-gray dark:text-white 
+           placeholder-gray-500 dark:placeholder-gray-400
+           focus:outline-none focus:ring-2 focus:ring-navara-blue focus:border-transparent
+           transition-colors duration-200;
+  }
+
+  /* Custom scrollbar */
+  ::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+
+  ::-webkit-scrollbar-track {
+    @apply bg-github-light-gray dark:bg-github-dark-gray;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    @apply bg-navara-blue rounded-full;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    @apply bg-navara-blue;
+  }
+}

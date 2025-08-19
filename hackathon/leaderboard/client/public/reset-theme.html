@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Reset Theme</title>
+</head>
+<body>
+    <h1>Theme Reset</h1>
+    <p>Click the button below to reset theme settings to default (light mode):</p>
+    <button onclick="resetTheme()">Reset Theme to Light Mode</button>
+    <p id="result"></p>
+    
+    <script>
+        function resetTheme() {
+            localStorage.removeItem('theme');
+            document.getElementById('result').innerHTML = 'Theme reset successfully! The app will now default to light mode.';
+        }
+    </script>
+</body>
+</html>

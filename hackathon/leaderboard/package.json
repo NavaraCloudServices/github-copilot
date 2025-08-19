@@ -1,0 +1,52 @@
+{
+  "name": "leaderboard-app",
+  "version": "1.0.0",
+  "description": "Real-time multi-tenant leaderboard application",
+  "main": "server/index.js",
+  "type": "module",
+  "scripts": {
+    "dev": "concurrently \"npm run server:dev\" \"npm run client:dev\"",
+    "server:dev": "nodemon server/index.js",
+    "client:dev": "cd client && npm run dev",
+    "build": "cd client && npm run build",
+    "start": "node server/index.js",
+    "test": "vitest",
+    "lint": "eslint server/**/*.js client/src/**/*.{js,jsx}",
+    "format": "prettier --write ."
+  },
+  "keywords": [
+    "leaderboard",
+    "real-time",
+    "websocket",
+    "competition"
+  ],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "better-sqlite3": "^11.10.0",
+    "connect-pg-simple": "^10.0.0",
+    "connect-sqlite3": "^0.9.13",
+    "cors": "^2.8.5",
+    "dotenv": "^16.3.1",
+    "express": "^4.18.2",
+    "express-rate-limit": "^6.10.0",
+    "express-session": "^1.17.3",
+    "helmet": "^7.0.0",
+    "joi": "^17.10.2",
+    "multer": "^2.0.0",
+    "pg": "^8.16.3",
+    "socket.io": "^4.7.2",
+    "uuid": "^9.0.0",
+    "winston": "^3.10.0"
+  },
+  "devDependencies": {
+    "concurrently": "^8.2.1",
+    "eslint": "^9.17.0",
+    "nodemon": "^3.0.1",
+    "prettier": "^3.0.3",
+    "vitest": "^0.34.6"
+  },
+  "engines": {
+    "node": ">=20.0.0"
+  }
+}
