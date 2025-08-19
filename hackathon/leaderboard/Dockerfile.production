@@ -24,8 +24,8 @@ COPY --from=backend-builder /app/server/ ./server
 # Copy frontend build output to the server's public directory
 COPY --from=frontend-builder /app/client/dist ./server/public
 
-# Copy sample challenges file
-COPY sample-challenges.json ./
+# Copy goals file
+COPY ./../goals.json ./
 
 # Expose the port the app runs on
 EXPOSE 3000
