@@ -1,0 +1,65 @@
+name: Deploy Leaderboard
+
+on:
+  # Stabalize when the workflow is stable
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - "hackathon/leaderboard/**"
+  pull_request:
+    branches: [main]
+    paths:
+      - "hackathon/leaderboard/**"
+
+concurrency: workflow
+
+permissions:
+  id-token: write 
+  contents: read 
+
+env:
+  ARM_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
+  ARM_USE_OIDC: true
+  BACKEND_RESOURCE_GROUP_NAME: "rg-githubcopilot"
+  BACKEND_STORAGE_ACCOUNT_NAME: "tfstategithubcopilot"
+  BACKEND_CONTAINER_NAME: "tfstategithubcopilot"
+  BACKEND_KEY: "prd.tfstategithubcopilot.tfstate"
+  TF_VAR_postgresql_admin_username: ${{ secrets.POSTGRES_LOGIN_USER }}
+  TF_VAR_postgresql_admin_password: ${{ secrets.POSTGRES_LOGIN_PWD }}
+  
+defaults:
+  run:
+    working-directory: ./hackathon/leaderboard/terraform
+jobs:
+  deploy:
+    name: Run OpenTofu
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@main
+        with:
+          fetch-depth: 0
+
+      - name: Install OpenTofu
+        uses: opentofu/setup-opentofu@v1
+
+      - name: Check Tofu formatting
+        run: |
+          tofu fmt -check -recursive
+
+      - name: Create Tofu plan
+        run: |
+          tofu init
+          tofu validate
+          tofu plan -out tofu.plan
+
+      - name: Show Tofu plan
+        run: |
+          tofu show tofu.plan
+
+      # Apply the plan, but only if the flag is true
+      - name: Run Tofu apply
+        run: |
+          tofu apply -auto-approve tofu.plan
