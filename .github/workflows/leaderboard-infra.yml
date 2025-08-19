@@ -1,4 +1,4 @@
-name: Deploy Leaderboard
+name: Deploy Leaderboard Infra
 
 on:
   # Stabalize when the workflow is stable
@@ -6,11 +6,11 @@ on:
   push:
     branches: [main]
     paths:
-      - "hackathon/leaderboard/**"
+      - "hackathon/leaderboard/terraform/**"
   pull_request:
     branches: [main]
     paths:
-      - "hackathon/leaderboard/**"
+      - "hackathon/leaderboard/terraform/**"
 
 concurrency: workflow
 

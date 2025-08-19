@@ -1,10 +1,22 @@
 name: Build and Push Leaderboard Images to ACR
 
 on:
+  # Stabalize when the workflow is stable
+  workflow_dispatch:
   push:
-    branches:
-      - main
-      - feat/leaderboard
+    branches: [main]
+    paths:
+      - "hackathon/leaderboard/**"
+    paths-ignore:
+      - "hackathon/leaderboard/terraform/**"
+  pull_request:
+    branches: [main]
+    paths:
+      - "hackathon/leaderboard/**"
+    paths-ignore:
+      - "hackathon/leaderboard/terraform/**"
+
+concurrency: workflow
 
 permissions:
   id-token: write
@@ -38,6 +50,10 @@ jobs:
           username: 00000000-0000-0000-0000-000000000000
           password: ${{ env.ACR_TOKEN }}
 
+      - name: Copy goals.json to leaderboard directory
+        run: |
+            cp hackathon/goals.json hackathon/leaderboard/goals.json
+      
       - name: Build Docker image
         run: |
           docker build -f hackathon/leaderboard/Dockerfile.production -t ${{ secrets.ACR_LOGIN_SERVER }}/leaderboard:latest .
