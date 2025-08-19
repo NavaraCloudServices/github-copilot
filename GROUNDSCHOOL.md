@@ -47,6 +47,7 @@ There are three ways to execute the exercises:
 - [Develop a shop cart](./challenges/eshop/eshop.md)
 - [Develop a memory game](./challenges/memorygame/memorygame.md)
 - [Develop a chat based on websockets](./challenges/chatwebsockets/chatwebsockets.md)
+- [Contonso micro social media website](https://github.com/microsoft/github-copilot-vibe-coding-workshop)
 
 ### Data
 

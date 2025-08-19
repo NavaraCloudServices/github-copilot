@@ -79,7 +79,9 @@ Implement the following methods:
   - Receive by querystring a parameter called *colorName*
   - read the `colors.json` file and return the *hex* field of the right collor
 
-  >Paste the above information in the GitHub Copilot Chat window and make it as detailed as possible. GitHub Copilot will use by default the open file as context in order to generate the suggestion.
+  >Drag and drop `colors.json` in the chat windows.  
+  Ask GitHub Copilot in the chat three implementations so you can choose. 
+
 
 #### **/GiveMeARandomChuckNorrisQuote**:
 

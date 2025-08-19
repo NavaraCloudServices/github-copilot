@@ -28,3 +28,4 @@ def test_name_not_passed():
 def test_name_passed():
     response = requests.get('http://localhost:3000/hello?name=world')
     assert response.text == 'hello world'
+
