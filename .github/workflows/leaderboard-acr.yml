@@ -7,14 +7,13 @@ on:
     branches: [main]
     paths:
       - "hackathon/leaderboard/**"
-    paths-ignore:
-      - "hackathon/leaderboard/terraform/**"
+      - "!hackathon/leaderboard/terraform/**"
+
   pull_request:
     branches: [main]
     paths:
       - "hackathon/leaderboard/**"
-    paths-ignore:
-      - "hackathon/leaderboard/terraform/**"
+      - "!hackathon/leaderboard/terraform/**"
 
 concurrency: workflow
 
@@ -52,8 +51,8 @@ jobs:
 
       - name: Copy goals.json to leaderboard directory
         run: |
-            cp hackathon/goals.json hackathon/leaderboard/goals.json
-      
+          cp hackathon/goals.json hackathon/leaderboard/goals.json
+
       - name: Build Docker image
         run: |
           docker build -f hackathon/leaderboard/Dockerfile.production -t ${{ secrets.ACR_LOGIN_SERVER }}/leaderboard:latest .
