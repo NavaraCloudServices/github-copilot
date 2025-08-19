@@ -26,8 +26,8 @@ data "azurerm_resource_group" "main" {
 
 resource "azurerm_container_registry" "main" {
   name                          = "acracaleaderboard${var.environment}"
-  resource_group_name           = azurerm_resource_group.main.name
-  location                      = azurerm_resource_group.main.location
+  resource_group_name           = data.azurerm_resource_group.main.name
+  location                      = data.azurerm_resource_group.main.location
   sku                           = "Basic"
   admin_enabled                 = true
   public_network_access_enabled = true
@@ -39,8 +39,8 @@ resource "azurerm_container_registry" "main" {
 
 resource "azurerm_postgresql_flexible_server" "main" {
   name                          = "psql-leaderboard-${var.environment}"
-  resource_group_name           = azurerm_resource_group.main.name
-  location                      = azurerm_resource_group.main.location
+  resource_group_name           = data.azurerm_resource_group.main.name
+  location                      = data.azurerm_resource_group.main.location
   version                       = "14"
   administrator_login           = var.postgresql_admin_username
   administrator_password        = var.postgresql_admin_password
@@ -73,8 +73,8 @@ resource "azurerm_postgresql_flexible_server_firewall_rule" "azure_services" {
 
 resource "azurerm_storage_account" "main" {
   name                     = "stleaderboard${var.environment}"
-  resource_group_name      = azurerm_resource_group.main.name
-  location                 = azurerm_resource_group.main.location
+  resource_group_name      = data.azurerm_resource_group.main.name
+  location                 = data.azurerm_resource_group.main.location
   account_tier             = "Standard"
   account_replication_type = "LRS"
 
@@ -95,8 +95,8 @@ resource "azurerm_storage_container" "main" {
 
 resource "azurerm_log_analytics_workspace" "main" {
   name                = "log-leaderboard-${var.environment}"
-  location            = azurerm_resource_group.main.location
-  resource_group_name = azurerm_resource_group.main.name
+  location            = data.azurerm_resource_group.main.location
+  resource_group_name = data.azurerm_resource_group.main.name
   sku                 = "PerGB2018"
   retention_in_days   = 30
 
@@ -107,8 +107,8 @@ resource "azurerm_log_analytics_workspace" "main" {
 
 resource "azurerm_application_insights" "main" {
   name                = "appi-leaderboard-${var.environment}"
-  location            = azurerm_resource_group.main.location
-  resource_group_name = azurerm_resource_group.main.name
+  location            = data.azurerm_resource_group.main.location
+  resource_group_name = data.azurerm_resource_group.main.name
   workspace_id        = azurerm_log_analytics_workspace.main.id
   application_type    = "Node.JS"
 
@@ -121,8 +121,8 @@ resource "azurerm_application_insights" "main" {
 
 resource "azurerm_container_app_environment" "main" {
   name                       = "cae-leaderboard-${var.environment}"
-  location                   = azurerm_resource_group.main.location
-  resource_group_name        = azurerm_resource_group.main.name
+  location                   = data.azurerm_resource_group.main.location
+  resource_group_name        = data.azurerm_resource_group.main.name
   log_analytics_workspace_id = azurerm_log_analytics_workspace.main.id
 
   tags = {
@@ -137,7 +137,7 @@ resource "azurerm_container_app_environment" "main" {
 resource "azurerm_container_app" "main" {
   name                         = "ca-leaderboard-${var.environment}"
   container_app_environment_id = azurerm_container_app_environment.main.id
-  resource_group_name          = azurerm_resource_group.main.name
+  resource_group_name          = data.azurerm_resource_group.main.name
   revision_mode                = "Single"
 
   template {
