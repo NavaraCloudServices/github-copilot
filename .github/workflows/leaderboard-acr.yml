@@ -1,0 +1,43 @@
+name: Build and Push Leaderboard Images to ACR
+
+on:
+  push:
+    branches:
+      - main
+      - feat/leaderboard
+
+jobs:
+  build-and-push:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Log in to Azure
+        uses: azure/login@v2
+        with:
+          client-id: ${{ secrets.AZURE_CLIENT_ID }}
+          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+
+      - name: "Azure Registry Login"
+        uses: azure/CLI@v2
+        with:
+          inlineScript: |
+            ACR_TOKEN=$(az acr login --name mscae --expose-token --query accessToken --output tsv)
+            echo "ACR_TOKEN=$ACR_TOKEN" >> $GITHUB_ENV
+
+      - name: Log in to ACR
+        uses: azure/docker-login@v2
+        with:
+          login-server: ${{ secrets.ACR_LOGIN_SERVER }}
+          username: 00000000-0000-0000-0000-000000000000
+          password: ${{ env.ACR_LOGIN_SERVER }}
+
+      - name: Build Docker image
+        run: |
+          docker build -f hackathon/leaderboard/Dockerfile.production -t ${{ secrets.ACR_LOGIN_SERVER }}/leaderboard:latest .
+
+      - name: Push Docker image
+        run: |
+          docker push ${{ secrets.ACR_LOGIN_SERVER }}/leaderboard:latest

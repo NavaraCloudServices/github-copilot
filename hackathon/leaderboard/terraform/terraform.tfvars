@@ -1,3 +1,3 @@
 environment         = "prd"
 resource_group_name = "rg-githubcopilot"
-container_image     = "acracaleaderboardprd.azurecr.io/leaderboard:latest"
+container_image     = "${var.acr_login_server}/leaderboard:latest"
