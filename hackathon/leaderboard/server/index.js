@@ -6,6 +6,7 @@ import session from 'express-session';
 import pgSession from 'connect-pg-simple';
 import rateLimit from 'express-rate-limit';
 import helmet from 'helmet';
+import lusca from 'lusca';
 import dotenv from 'dotenv';
 import { fileURLToPath } from 'url';
 import { dirname, join } from 'path';
@@ -98,6 +99,9 @@ class LeaderboardServer {
         maxAge: 24 * 60 * 60 * 1000 // 24 hours
       }
     }));
+
+    // CSRF protection middleware
+    this.app.use(lusca.csrf());
 
     // Make database and io available to routes
     this.app.use((req, res, next) => {
