@@ -55,12 +55,12 @@ jobs:
         run: |
           tofu init
           tofu validate
-          tofu plan -out tofu.plan
+          tofu plan
 
       - name: Show Tofu plan
         run: |
-          tofu show tofu.plan
+          tofu show
           
       - name: Run Tofu apply
         run: |
-          tofu apply -auto-approve tofu.plan
+          tofu apply -auto-approve
