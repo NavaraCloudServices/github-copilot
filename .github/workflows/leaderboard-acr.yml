@@ -24,11 +24,11 @@ jobs:
           tenant-id: ${{ secrets.AZURE_TENANT_ID }}
           subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
 
-      - name: "Azure Registry Login"
+      - name: "Azure Registry Get Login"
         uses: azure/CLI@v2
         with:
           inlineScript: |
-            ACR_TOKEN=$(az acr login --name mscae --expose-token --query accessToken --output tsv)
+            ACR_TOKEN=$(az acr login --name ${{ secrets.ACR_LOGIN_SERVER }} --expose-token --query accessToken --output tsv)
             echo "ACR_TOKEN=$ACR_TOKEN" >> $GITHUB_ENV
 
       - name: Log in to ACR
