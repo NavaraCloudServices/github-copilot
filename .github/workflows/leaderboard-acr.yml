@@ -36,7 +36,7 @@ jobs:
         with:
           login-server: ${{ secrets.ACR_LOGIN_SERVER }}
           username: 00000000-0000-0000-0000-000000000000
-          password: ${{ env.ACR_LOGIN_SERVER }}
+          password: ${{ env.ACR_TOKEN }}
 
       - name: Build Docker image
         run: |
