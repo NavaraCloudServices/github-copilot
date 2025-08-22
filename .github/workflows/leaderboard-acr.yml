@@ -6,6 +6,7 @@ on:
     branches: [main]
     paths:
       - "hackathon/leaderboard/**"
+      - "!hackathon/leaderboard/*.md"
       - "!hackathon/leaderboard/terraform/**"
 
 permissions:
