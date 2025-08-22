@@ -15,19 +15,22 @@ We have demonstrated GitHub Copilot's main features; however,
 - The features are tool features, not capabilities (what you do and why you use them)
 - Now it is time to discover what GitHub Copilot can do for you!
 
-**What are we going to do**
+**What are we going to do?**
 
 - You will start exploring GitHub Copilot's capabilities in your chosen project.
 - You will apply what you've learned in a practical setting.
 - Use your project (work- or hobby-related) as a playground.
 - Just start coding as you normally would and experiment with how GitHub Copilot can assist you.
 
-**How are we going to do it**
+**How are we going to do it?**
 
-- Work in pairs if applicable.
-- In our repository, you will find a [GOALS.md](./hackathon/GOALS.md) file that contains activities.
-- Use the activities as a scorecard to track your progress.
-- Use our scorecard template to document your achievements.
+- You can work alone or in pairs (we recommend this)
+- Go to our [Leaderboard app](https://ca-leaderboard-prd.livelyplant-1fbb6cbd.westeurope.azurecontainerapps.io/)
+- Join a Competition using the 'Access Code' provided. Name your team and add team members
+- Use the app to track your Challenges. 
+- Challenges are capabilities for what you can do with GitHub Copilot. Let the Challenges guide your exploration!
+
+>You can cheat but is that fun? It is about learning.
 
 ## If you did not bring your own code
 

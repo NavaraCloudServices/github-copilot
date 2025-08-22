@@ -1,0 +1,100 @@
+name: Build, Push, and Deploy Leaderboard to Container Apps
+
+on:
+  # Stabalize when the workflow is stable
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - "hackathon/leaderboard/**"
+      - "!hackathon/leaderboard/terraform/**"
+
+  pull_request:
+    branches: [main]
+    paths:
+      - "hackathon/leaderboard/**"
+      - "!hackathon/leaderboard/terraform/**"
+
+permissions:
+  id-token: write
+  contents: read
+
+jobs:
+  build-and-push:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Log in to Azure
+        uses: azure/login@v2
+        with:
+          client-id: ${{ secrets.AZURE_CLIENT_ID }}
+          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+
+      - name: "Azure Registry Get Login"
+        uses: azure/CLI@v2
+        with:
+          inlineScript: |
+            ACR_TOKEN=$(az acr login --name ${{ secrets.ACR_LOGIN_SERVER }} --expose-token --query accessToken --output tsv)
+            echo "ACR_TOKEN=$ACR_TOKEN" >> $GITHUB_ENV
+
+      - name: Log in to ACR
+        uses: azure/docker-login@v2
+        with:
+          login-server: ${{ secrets.ACR_LOGIN_SERVER }}
+          username: 00000000-0000-0000-0000-000000000000
+          password: ${{ env.ACR_TOKEN }}
+
+      - name: Copy goals.json to leaderboard directory
+        run: |
+          cp hackathon/goals.json hackathon/leaderboard/goals.json
+
+      - name: Build Docker images
+        run: |
+          cd hackathon/leaderboard
+          docker build -f Dockerfile.production -t ${{ secrets.ACR_LOGIN_SERVER }}/leaderboard:latest .
+
+      - name: Push Docker images
+        run: |
+          docker push ${{ secrets.ACR_LOGIN_SERVER }}/leaderboard:latest
+
+      # Deploy to Container Apps with revision management
+      - name: Deploy to Container Apps
+        uses: azure/CLI@v2
+        with:
+          inlineScript: |
+            # Create a new revision with the updated image
+            az containerapp update \
+              --name ca-leaderboard-prd \
+              --resource-group rg-githubcopilot \
+              --image ${{ secrets.ACR_LOGIN_SERVER }}/leaderboard:latest \
+              --revision-suffix $(date +%Y%m%d%H%M%S)
+
+      - name: Cleanup old revisions
+        uses: azure/CLI@v2
+        with:
+          inlineScript: |
+            # Get all revisions for the container app
+            REVISIONS=$(az containerapp revision list \
+              --name ca-leaderboard-prd \
+              --resource-group rg-githubcopilot \
+              --query "[?properties.active==\`false\`].name" \
+              --output tsv)
+
+            # Keep only the 3 most recent inactive revisions and delete the rest
+            if [ ! -z "$REVISIONS" ]; then
+              REVISION_COUNT=$(echo "$REVISIONS" | wc -l)
+              if [ $REVISION_COUNT -gt 3 ]; then
+                REVISIONS_TO_DELETE=$(echo "$REVISIONS" | head -n $((REVISION_COUNT - 3)))
+                for revision in $REVISIONS_TO_DELETE; do
+                  echo "Deleting revision: $revision"
+                  az containerapp revision delete \
+                    --name ca-leaderboard-prd \
+                    --resource-group rg-githubcopilot \
+                    --revision $revision \
+                    --yes
+                done
+              fi
+            fi

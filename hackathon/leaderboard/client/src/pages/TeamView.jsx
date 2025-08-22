@@ -1,0 +1,854 @@
+import React, { useState, useEffect } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { useParams } from 'react-router-dom';
+import { 
+  Trophy, 
+  Users, 
+  Target, 
+  CheckCircle2,
+  Circle,
+  Star,
+  Clock,
+  Lightbulb,
+  ArrowRight,
+  TrendingUp,
+  Filter,
+  Search,
+  Award,
+  Eye,
+  Copy,
+  Check,
+  Hash
+} from 'lucide-react';
+import { useAuth } from '../contexts/AuthContext';
+import useWebSocket from '../hooks/useWebSocket';
+import { leaderboardApi, teamApi } from '../services/api';
+import toast from 'react-hot-toast';
+import Button from '../components/Common/Button';
+import Card, { CardHeader, CardTitle, CardContent } from '../components/Common/Card';
+import LoadingSpinner from '../components/Common/LoadingSpinner';
+import Modal from '../components/Common/Modal';
+import { TextWithLinks } from '../utils/textUtils.jsx';
+
+// Bingo Card Style Challenge Card Component
+const ChallengeCard = ({ challenge, isCompleted, onComplete, onIncomplete, onShowDetails }) => {
+  const categoryColors = {
+    beginner: { bg: 'bg-green-100 dark:bg-green-900/30', border: 'border-green-300 dark:border-green-700', text: 'text-green-700 dark:text-green-300' },
+    intermediate: { bg: 'bg-yellow-100 dark:bg-yellow-900/30', border: 'border-yellow-300 dark:border-yellow-700', text: 'text-yellow-700 dark:text-yellow-300' },
+    advanced: { bg: 'bg-red-100 dark:bg-red-900/30', border: 'border-red-300 dark:border-red-700', text: 'text-red-700 dark:text-red-300' },
+    bonus: { bg: 'bg-purple-100 dark:bg-purple-900/30', border: 'border-purple-300 dark:border-purple-700', text: 'text-purple-700 dark:text-purple-300' }
+  };
+
+  const categoryStyle = categoryColors[challenge.category] || categoryColors.beginner;
+
+  return (
+    <motion.div
+      layout
+      initial={{ opacity: 0, scale: 0.8 }}
+      animate={{ opacity: 1, scale: 1 }}
+      whileHover={{ scale: isCompleted ? 1 : 1.05 }}
+      whileTap={{ scale: 0.95 }}
+      transition={{ duration: 0.2 }}
+      className={`relative aspect-square rounded-lg border-2 transition-all duration-200 cursor-pointer ${
+        isCompleted 
+          ? 'bg-green-50 border-green-300 dark:bg-green-900/20 dark:border-green-600 shadow-green-200/50 dark:shadow-green-800/20 shadow-lg' 
+          : `${categoryStyle.bg} ${categoryStyle.border} hover:shadow-lg`
+      }`}
+      onClick={onShowDetails}
+    >
+      {/* Completion Stamp */}
+      {isCompleted && (
+        <div className="absolute inset-0 flex items-center justify-center z-20 bg-green-500/10">
+          <motion.div
+            initial={{ scale: 0, rotate: -45 }}
+            animate={{ scale: 1, rotate: 0 }}
+            transition={{ duration: 0.5, type: "spring", stiffness: 500 }}
+            className="bg-green-500 text-white rounded-full p-3"
+          >
+            <CheckCircle2 className="h-8 w-8" />
+          </motion.div>
+        </div>
+      )}
+
+      {/* Challenge Number - Top Left Corner */}
+      <div className="absolute top-2 left-2 text-sm font-medium text-gray-400 dark:text-gray-500">
+        {challenge.number || challenge.id.split('_')[1] || '?'}
+      </div>
+
+      <div className="p-4 h-full flex flex-col">
+        {/* Header - Points only */}
+        <div className="flex justify-end mb-3">
+          <div className="flex items-center gap-1 text-sm font-bold text-gray-700 dark:text-gray-300">
+            <Star className="h-3 w-3" />
+            {challenge.points}
+          </div>
+        </div>
+
+        {/* Short Name */}
+        <div className="flex-1 flex items-center justify-center text-center px-2 min-h-0">
+          <h3 className={`text-sm font-semibold leading-tight line-clamp-3 ${
+            isCompleted ? 'text-green-700 dark:text-green-300' : 'text-navara-navy dark:text-white'
+          }`} 
+          style={{
+            display: '-webkit-box',
+            WebkitLineClamp: 3,
+            WebkitBoxOrient: 'vertical',
+            overflow: 'hidden',
+            textOverflow: 'ellipsis'
+          }}>
+            {challenge.short_name || challenge.title}
+          </h3>
+        </div>
+
+        {/* Quick Action Icons */}
+        <div className="flex justify-center gap-2 mt-auto pt-2">
+          {challenge.hints && challenge.hints.length > 0 && (
+            <div className="p-1 bg-yellow-100 dark:bg-yellow-900 rounded text-yellow-600 dark:text-yellow-400">
+              <Lightbulb className="h-3 w-3" />
+            </div>
+          )}
+        </div>
+
+        {/* Action Buttons (show on hover) */}
+        {!isCompleted && (
+          <motion.div
+            initial={{ opacity: 0, y: 10 }}
+            whileHover={{ opacity: 1, y: 0 }}
+            className="absolute bottom-2 left-2 right-2"
+          >
+            <Button
+              variant="primary"
+              size="sm"
+              onClick={(e) => {
+                e.stopPropagation();
+                onComplete();
+              }}
+              className="w-full text-xs"
+            >
+              <Circle className="h-3 w-3 mr-1" />
+              Complete
+            </Button>
+          </motion.div>
+        )}
+        
+        {isCompleted && (
+          <motion.div
+            initial={{ opacity: 0, y: 10 }}
+            whileHover={{ opacity: 1, y: 0 }}
+            className="absolute bottom-2 left-2 right-2"
+          >
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={(e) => {
+                e.stopPropagation();
+                onIncomplete();
+              }}
+              className="w-full text-xs"
+            >
+              <Circle className="h-3 w-3 mr-1" />
+              Mark Incomplete
+            </Button>
+          </motion.div>
+        )}
+      </div>
+
+      {/* Category Color Strip */}
+      <div 
+        className={`absolute top-0 left-0 right-0 h-1 rounded-t-xl`}
+        style={{ backgroundColor: challenge.category === 'beginner' ? '#10B981' :
+                                   challenge.category === 'intermediate' ? '#F59E0B' :
+                                   challenge.category === 'advanced' ? '#EF4444' : '#8B5CF6' }}
+      />
+    </motion.div>
+  );
+};
+
+// Challenge Detail Modal
+const ChallengeDetailModal = ({ challenge, isOpen, onClose, onComplete, onIncomplete, isCompleted }) => {
+  if (!challenge) return null;
+
+  return (
+    <Modal
+      isOpen={isOpen}
+      onClose={onClose}
+      title={challenge.title}
+      size="lg"
+    >
+      <div className="space-y-6">
+        {/* Challenge Info */}
+        <div className="flex items-center gap-4">
+          <span className="px-3 py-1 bg-blue-100 dark:bg-blue-900 text-blue-700 dark:text-blue-300 rounded-full text-sm font-medium">
+            {challenge.skill_level}
+          </span>
+          <span className="flex items-center gap-1 text-gray-600 dark:text-gray-400">
+            <Star className="h-4 w-4" />
+            {challenge.points} points
+          </span>
+        </div>
+
+        {/* Description */}
+        <div>
+          <h4 className="font-semibold text-navara-navy dark:text-white mb-2">Description</h4>
+          <p className="text-github-dark-gray dark:text-github-light-gray">
+            <TextWithLinks text={challenge.description} />
+          </p>
+        </div>
+
+        {/* Goal */}
+        {challenge.goal && (
+          <div className="bg-blue-50 dark:bg-blue-900/20 rounded-lg p-4 border border-blue-200 dark:border-blue-800">
+            <h4 className="font-semibold text-navara-blue dark:text-blue-200 mb-2 flex items-center gap-2">
+              <Target className="h-4 w-4" />
+              Goal
+            </h4>
+            <p className="text-navara-blue dark:text-blue-300">
+              <TextWithLinks text={challenge.goal} />
+            </p>
+          </div>
+        )}
+
+        {/* Hints */}
+        {challenge.hints && challenge.hints.length > 0 && (
+          <div>
+            <h4 className="font-semibold text-navara-navy dark:text-white mb-3 flex items-center gap-2">
+              <Lightbulb className="h-4 w-4 text-yellow-600 dark:text-yellow-400" />
+              Hints
+            </h4>
+            <ul className="space-y-2">
+              {challenge.hints.map((hint, index) => (
+                <li key={index} className="flex items-start gap-3">
+                  <span className="bg-yellow-100 dark:bg-yellow-900 text-yellow-700 dark:text-yellow-300 rounded-full w-6 h-6 flex items-center justify-center text-sm font-medium flex-shrink-0 mt-0.5">
+                    {index + 1}
+                  </span>
+                  <span className="text-github-dark-gray dark:text-github-light-gray">
+                    <TextWithLinks text={hint} />
+                  </span>
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
+
+        {/* Success Criteria */}
+        {challenge.success_criteria && (
+          <div className="bg-green-50 dark:bg-green-900/20 rounded-lg p-4 border border-green-200 dark:border-green-800">
+            <h4 className="font-semibold text-green-900 dark:text-green-200 mb-2 flex items-center gap-2">
+              <CheckCircle2 className="h-4 w-4" />
+              Success Criteria
+            </h4>
+            <p className="text-green-800 dark:text-green-300">
+              <TextWithLinks text={challenge.success_criteria} />
+            </p>
+          </div>
+        )}
+
+        {/* Action Buttons */}
+        <div className="flex gap-3 pt-4 border-t border-gray-200 dark:border-gray-700">
+          <Button variant="outline" onClick={onClose} className="flex-1">
+            Close
+          </Button>
+          {!isCompleted ? (
+            <Button
+              variant="primary"
+              onClick={onComplete}
+              className="flex-1"
+            >
+              Mark as Complete
+            </Button>
+          ) : (
+            <Button
+              variant="outline"
+              onClick={onIncomplete}
+              className="flex-1"
+            >
+              Mark as Incomplete
+            </Button>
+          )}
+        </div>
+      </div>
+    </Modal>
+  );
+};
+
+const TeamView = () => {
+  const { leaderboardId } = useParams();
+  const { user, isTeam } = useAuth();
+  const [leaderboard, setLeaderboard] = useState(null);
+  const [teamProgress, setTeamProgress] = useState(null);
+  const [completedChallenges, setCompletedChallenges] = useState(new Set());
+  const [loading, setLoading] = useState(true);
+  const [selectedChallenge, setSelectedChallenge] = useState(null);
+  const [showDetailModal, setShowDetailModal] = useState(false);
+  const [filter, setFilter] = useState('all');
+  const [searchQuery, setSearchQuery] = useState('');
+  const [copiedTeamCode, setCopiedTeamCode] = useState(false);
+
+  const {
+    connected,
+    teams,
+    leaderboardData,
+    recentCompletions,
+    completeChallenge
+  } = useWebSocket(leaderboardId);
+
+  useEffect(() => {
+    if (leaderboardId && user?.teamId) {
+      loadData();
+    }
+  }, [leaderboardId, user?.teamId]);
+
+  const loadData = async () => {
+    try {
+      const [leaderboardResponse, progressResponse] = await Promise.all([
+        leaderboardApi.get(leaderboardId),
+        teamApi.getProgress(user.teamId)
+      ]);
+      
+      setLeaderboard(leaderboardResponse.data);
+      setTeamProgress(progressResponse.data);
+      
+      // Set completed challenges
+      const completed = new Set(progressResponse.data.completions.map(c => c.challenge_id));
+      setCompletedChallenges(completed);
+      
+    } catch (error) {
+      toast.error('Failed to load team data');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleCompleteChallenge = async (challengeId) => {
+    try {
+      await teamApi.completeChallenge(user.teamId, challengeId);
+      
+      // Update local state
+      setCompletedChallenges(prev => new Set([...prev, challengeId]));
+      
+      // Refresh progress data
+      const progressResponse = await teamApi.getProgress(user.teamId);
+      setTeamProgress(progressResponse.data);
+      
+      setShowDetailModal(false);
+      toast.success('Challenge completed! 🎉');
+    } catch (error) {
+      toast.error(error.message || 'Failed to complete challenge');
+    }
+  };
+
+  const handleIncompleteChallenge = async (challengeId) => {
+    try {
+      await teamApi.incompleteChallenge(user.teamId, challengeId);
+      
+      // Update local state
+      setCompletedChallenges(prev => {
+        const newSet = new Set(prev);
+        newSet.delete(challengeId);
+        return newSet;
+      });
+      
+      // Refresh progress data
+      const progressResponse = await teamApi.getProgress(user.teamId);
+      setTeamProgress(progressResponse.data);
+      
+      setShowDetailModal(false);
+      toast.success('Challenge marked as incomplete');
+      
+    } catch (error) {
+      toast.error(error.response?.data?.error || 'Failed to complete challenge');
+    }
+  };
+
+  const copyTeamCode = async () => {
+    if (user?.teamCode) {
+      try {
+        await navigator.clipboard.writeText(user.teamCode);
+        setCopiedTeamCode(true);
+        toast.success('Team code copied! Share this with team members to let them join.');
+        setTimeout(() => setCopiedTeamCode(false), 2000);
+      } catch (error) {
+        toast.error('Failed to copy team code');
+      }
+    }
+  };
+
+  if (loading) {
+    return <LoadingSpinner fullScreen text="Loading team dashboard..." />;
+  }
+
+  if (!isTeam || !leaderboard || !teamProgress) {
+    return (
+      <div className="container mx-auto px-4 py-8 text-center">
+        <h1 className="text-2xl font-bold text-red-600 mb-4">Access Denied</h1>
+        <p className="text-gray-600 dark:text-gray-400">You don't have permission to access this team dashboard.</p>
+      </div>
+    );
+  }
+
+  const currentStatus = leaderboardData?.status || leaderboard.status;
+  const challenges = leaderboard.challenges?.challenges || [];
+  const categories = leaderboard.challenges?.categories || [];
+  const currentTeam = teams.find(t => t.id === user.teamId);
+  const teamRank = teams.findIndex(t => t.id === user.teamId) + 1;
+
+  // Filter challenges
+  const filteredChallenges = challenges.filter(challenge => {
+    const matchesFilter = filter === 'all' || 
+      (filter === 'completed' && completedChallenges.has(challenge.id)) ||
+      (filter === 'incomplete' && !completedChallenges.has(challenge.id)) ||
+      (filter !== 'all' && filter !== 'completed' && filter !== 'incomplete' && challenge.category === filter);
+
+    const matchesSearch = searchQuery === '' || 
+      challenge.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      challenge.description.toLowerCase().includes(searchQuery.toLowerCase());
+
+    return matchesFilter && matchesSearch;
+  });
+
+  return (
+    <div className="container mx-auto px-4 py-8 space-y-8">
+      {/* Header */}
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4"
+      >
+        <div>
+          <h1 className="text-3xl font-bold text-navara-navy dark:text-white mb-2">
+            Team Dashboard
+          </h1>
+          <div className="flex items-center gap-4 text-sm text-github-dark-gray dark:text-github-light-gray">
+            <span className="flex items-center gap-1">
+              <Users className="h-4 w-4" />
+              {teamProgress.teamName}
+            </span>
+            <span className="flex items-center gap-1">
+              <Trophy className="h-4 w-4" />
+              Rank #{teamRank} ({teamProgress.totalPoints} points)
+            </span>
+            <span className="flex items-center gap-1">
+              <Target className="h-4 w-4" />
+              {teamProgress.completedChallenges}/{teamProgress.totalChallenges} challenges
+            </span>
+          </div>
+        </div>
+
+        <div className="flex items-center gap-3">
+          <div className={`flex items-center gap-2 px-3 py-1 rounded-full text-sm ${
+            connected ? 'bg-green-100 text-green-700 dark:bg-green-900 dark:text-green-300' : 
+            'bg-red-100 text-red-700 dark:bg-red-900 dark:text-red-300'
+          }`}>
+            <div className={`w-2 h-2 rounded-full ${connected ? 'bg-green-500' : 'bg-red-500'}`} />
+            {connected ? 'Live' : 'Disconnected'}
+          </div>
+
+          <div className={`px-3 py-1 rounded-full text-sm font-medium ${
+            currentStatus === 'started' ? 'bg-blue-100 text-blue-700 dark:bg-blue-900 dark:text-blue-300' :
+            currentStatus === 'paused' ? 'bg-yellow-100 text-yellow-700 dark:bg-yellow-900 dark:text-yellow-300' :
+            currentStatus === 'ended' ? 'bg-gray-100 text-gray-700 dark:bg-gray-900 dark:text-gray-300' :
+            'bg-purple-100 text-purple-700 dark:bg-purple-900 dark:text-purple-300'
+          }`}>
+            {currentStatus === 'active' ? 'Ready' : 
+             currentStatus === 'started' ? 'In Progress' :
+             currentStatus === 'paused' ? 'Paused' : 'Ended'}
+          </div>
+        </div>
+      </motion.div>
+
+      <div className="grid lg:grid-cols-4 gap-8">
+        {/* Main Content */}
+        <div className="lg:col-span-3 space-y-6">
+          {/* Progress Overview */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.1 }}
+          >
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <TrendingUp className="h-5 w-5" />
+                  Progress Overview
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="grid md:grid-cols-4 gap-4 mb-6">
+                  <div className="text-center">
+                    <div className="text-2xl font-bold text-navara-navy dark:text-white">
+                      {teamProgress.totalPoints}
+                    </div>
+                    <div className="text-sm text-github-dark-gray dark:text-github-light-gray">Total Points</div>
+                  </div>
+                  <div className="text-center">
+                    <div className="text-2xl font-bold text-navara-navy dark:text-white">
+                      #{teamRank}
+                    </div>
+                    <div className="text-sm text-github-dark-gray dark:text-github-light-gray">Current Rank</div>
+                  </div>
+                  <div className="text-center">
+                    <div className="text-2xl font-bold text-navara-navy dark:text-white">
+                      {teamProgress.completedChallenges}
+                    </div>
+                    <div className="text-sm text-github-dark-gray dark:text-github-light-gray">Completed</div>
+                  </div>
+                  <div className="text-center">
+                    <div className="text-2xl font-bold text-navara-navy dark:text-white">
+                      {teamProgress.progressPercentage}%
+                    </div>
+                    <div className="text-sm text-github-dark-gray dark:text-github-light-gray">Progress</div>
+                  </div>
+                </div>
+
+                {/* Overall Progress Bar */}
+                <div className="mb-4">
+                  <div className="flex justify-between text-sm text-github-dark-gray dark:text-github-light-gray mb-1">
+                    <span>Overall Progress</span>
+                    <span>{teamProgress.completedChallenges} / {teamProgress.totalChallenges}</span>
+                  </div>
+                  <div className="w-full bg-github-light-gray dark:bg-gray-700 rounded-full h-3">
+                    <motion.div
+                      initial={{ width: 0 }}
+                      animate={{ width: `${teamProgress.progressPercentage}%` }}
+                      transition={{ duration: 1 }}
+                      className="h-3 bg-gradient-to-r from-navara-blue to-blue-600 rounded-full"
+                    />
+                  </div>
+                </div>
+
+                {/* Category Progress */}
+                <div className="grid md:grid-cols-2 gap-4">
+                  {Object.entries(teamProgress.categoryProgress || {}).map(([categoryId, progress]) => {
+                    const category = categories.find(c => c.id === categoryId);
+                    const percentage = progress.total > 0 ? Math.round((progress.completed / progress.total) * 100) : 0;
+                    
+                    return (
+                      <div key={categoryId} className="flex items-center gap-3">
+                        <div 
+                          className="w-4 h-4 rounded-full flex-shrink-0"
+                          style={{ backgroundColor: category?.color || '#6B7280' }}
+                        />
+                        <div className="flex-1">
+                          <div className="flex justify-between text-sm mb-1">
+                            <span className="font-medium text-navara-navy dark:text-white">
+                              {progress.name}
+                            </span>
+                            <span className="text-github-dark-gray dark:text-github-light-gray">
+                              {progress.completed}/{progress.total}
+                            </span>
+                          </div>
+                          <div className="w-full bg-github-light-gray dark:bg-gray-700 rounded-full h-2">
+                            <div
+                              className="h-2 rounded-full transition-all duration-300"
+                              style={{ 
+                                width: `${percentage}%`,
+                                backgroundColor: category?.color || '#6B7280'
+                              }}
+                            />
+                          </div>
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              </CardContent>
+            </Card>
+          </motion.div>
+
+          {/* Challenges Section */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.2 }}
+          >
+            <Card>
+              <CardHeader>
+                <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+                  <CardTitle className="flex items-center gap-2">
+                    <Target className="h-5 w-5" />
+                    Challenges ({filteredChallenges.length})
+                  </CardTitle>
+                  
+                  <div className="flex flex-col md:flex-row gap-3 w-full md:w-auto">
+                    {/* Search */}
+                    <div className="relative">
+                      <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
+                      <input
+                        type="text"
+                        placeholder="Search challenges..."
+                        value={searchQuery}
+                        onChange={(e) => setSearchQuery(e.target.value)}
+                        className="input pl-10 md:w-64"
+                      />
+                    </div>
+                    
+                    {/* Filter */}
+                    <select
+                      value={filter}
+                      onChange={(e) => setFilter(e.target.value)}
+                      className="input md:w-48"
+                    >
+                      <option value="all">All Challenges</option>
+                      <option value="completed">Completed</option>
+                      <option value="incomplete">Incomplete</option>
+                      {categories.map(category => (
+                        <option key={category.id} value={category.id}>
+                          {category.name}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                </div>
+              </CardHeader>
+              <CardContent>
+                {/* Bingo Progress Indicator */}
+                {filteredChallenges.length > 0 && (
+                  <div className="mb-6 p-4 bg-gradient-to-r from-blue-50 to-purple-50 dark:from-blue-900/20 dark:to-purple-900/20 rounded-lg border border-blue-200 dark:border-blue-800">
+                    <div className="flex items-center justify-between mb-2">
+                      <div className="flex items-center gap-2">
+                        <Trophy className="h-5 w-5 text-yellow-600 dark:text-yellow-400" />
+                        <span className="font-semibold text-navara-navy dark:text-white">Challenge Bingo Progress</span>
+                      </div>
+                      <div className="text-sm text-github-dark-gray dark:text-github-light-gray">
+                        {filteredChallenges.filter(c => completedChallenges.has(c.id)).length} / {filteredChallenges.length} completed
+                      </div>
+                    </div>
+                    
+                    {/* Category completion indicators */}
+                    <div className="flex gap-2 flex-wrap">
+                      {categories.map(category => {
+                        const categorySteps = filteredChallenges.filter(c => c.category === category.id);
+                        const completedInCategory = categorySteps.filter(c => completedChallenges.has(c.id)).length;
+                        const isFullyCompleted = categorySteps.length > 0 && completedInCategory === categorySteps.length;
+                        
+                        return (
+                          <div key={category.id} className="flex items-center gap-1 text-xs">
+                            <div 
+                              className={`w-3 h-3 rounded-full ${isFullyCompleted ? 'animate-pulse' : ''}`}
+                              style={{ backgroundColor: category.color }}
+                            />
+                            <span className={`${isFullyCompleted ? 'font-bold text-green-600 dark:text-green-400' : 'text-github-dark-gray dark:text-github-light-gray'}`}>
+                              {category.name.split(' ')[0]} {completedInCategory}/{categorySteps.length}
+                              {isFullyCompleted && ' ✨'}
+                            </span>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  </div>
+                )}
+
+                {filteredChallenges.length === 0 ? (
+                  <div className="text-center py-8 text-gray-600 dark:text-gray-400">
+                    <Target className="h-12 w-12 mx-auto mb-4 opacity-50" />
+                    <p>No challenges match your current filter.</p>
+                    <p className="text-sm mt-2">Try adjusting your search or filter settings.</p>
+                  </div>
+                ) : (
+                  <div className="space-y-4">
+                    {/* Challenge Grid */}
+                    <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4">
+                      <AnimatePresence mode="popLayout">
+                        {filteredChallenges.map((challenge, index) => (
+                          <motion.div
+                            key={challenge.id}
+                            initial={{ opacity: 0, scale: 0.8 }}
+                            animate={{ opacity: 1, scale: 1 }}
+                            transition={{ delay: index * 0.05 }}
+                          >
+                            <ChallengeCard
+                              challenge={challenge}
+                              isCompleted={completedChallenges.has(challenge.id)}
+                              onComplete={() => handleCompleteChallenge(challenge.id)}
+                              onIncomplete={() => handleIncompleteChallenge(challenge.id)}
+                              onShowDetails={() => {
+                                setSelectedChallenge(challenge);
+                                setShowDetailModal(true);
+                              }}
+                            />
+                          </motion.div>
+                        ))}
+                      </AnimatePresence>
+                    </div>
+
+                    {/* Completion Encouragement */}
+                    {filteredChallenges.length > 0 && (
+                      <div className="text-center mt-6 p-4 bg-gray-50 dark:bg-gray-800 rounded-lg">
+                        <p className="text-sm text-gray-600 dark:text-gray-400">
+                          💡 <strong>Tip:</strong> Click on any challenge card to see full details, hints, and completion criteria!
+                        </p>
+                      </div>
+                    )}
+                  </div>
+                )}
+              </CardContent>
+            </Card>
+          </motion.div>
+        </div>
+
+        {/* Sidebar */}
+        <div className="space-y-6">
+          {/* Team Info */}
+          <motion.div
+            initial={{ opacity: 0, x: 20 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ delay: 0.3 }}
+          >
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <Users className="h-5 w-5" />
+                  Team Members
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-4">
+                  {/* Team Members */}
+                  <div className="space-y-2">
+                    {teamProgress.members.map((member, index) => (
+                      <div key={index} className="flex items-center gap-2">
+                        <div className="w-8 h-8 bg-navara-blue text-white rounded-full flex items-center justify-center text-sm font-medium">
+                          {member.charAt(0).toUpperCase()}
+                        </div>
+                        <span className="text-navara-navy dark:text-white font-medium">{member}</span>
+                      </div>
+                    ))}
+                  </div>
+
+                  {/* Team Code */}
+                  {user?.teamCode && (
+                    <div className="pt-4 border-t border-github-light-gray dark:border-gray-700">
+                      <div className="flex items-center gap-2 mb-2">
+                        <Hash className="h-4 w-4 text-github-dark-gray dark:text-github-light-gray" />
+                        <span className="text-sm font-medium text-github-dark-gray dark:text-github-light-gray">Team Code</span>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <div className="flex-1 bg-github-light-gray dark:bg-github-dark-gray border border-github-light-gray dark:border-gray-600 rounded-lg px-3 py-2 font-mono text-sm font-bold text-navara-navy dark:text-white">
+                          {user.teamCode}
+                        </div>
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={copyTeamCode}
+                          className="shrink-0"
+                        >
+                          {copiedTeamCode ? <Check className="h-4 w-4" /> : <Copy className="h-4 w-4" />}
+                        </Button>
+                      </div>
+                      <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
+                        Share this code with team members so they can join
+                      </p>
+                    </div>
+                  )}
+                </div>
+              </CardContent>
+            </Card>
+          </motion.div>
+
+          {/* Mini Leaderboard */}
+          <motion.div
+            initial={{ opacity: 0, x: 20 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ delay: 0.4 }}
+          >
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <Trophy className="h-5 w-5" />
+                  Leaderboard
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-3">
+                  {teams.slice(0, 5).map((team, index) => (
+                    <div
+                      key={team.id}
+                      className={`flex items-center gap-3 p-2 rounded-lg ${
+                        team.id === user.teamId 
+                          ? 'bg-navara-blue/10 border border-navara-blue' 
+                          : 'bg-github-light-gray dark:bg-github-dark-gray'
+                      }`}
+                    >
+                      <div className={`w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold ${
+                        index === 0 ? 'bg-yellow-500 text-white' :
+                        index === 1 ? 'bg-gray-500 text-white' :
+                        index === 2 ? 'bg-orange-500 text-white' :
+                        'bg-navara-blue text-white'
+                      }`}>
+                        {index + 1}
+                      </div>
+                      <div className="flex-1">
+                        <div className="font-medium text-navara-navy dark:text-white text-sm">
+                          {team.name}
+                          {team.id === user.teamId && <span className="text-navara-blue ml-1">(You)</span>}
+                        </div>
+                        <div className="text-xs text-github-dark-gray dark:text-github-light-gray">
+                          {team.total_points || 0} points
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                  
+                  {teams.length > 5 && (
+                    <div className="text-center pt-2">
+                      <Button variant="ghost" size="sm" as="a" href={`/leaderboard/${leaderboardId}`} target="_blank">
+                        View Full Leaderboard
+                      </Button>
+                    </div>
+                  )}
+                </div>
+              </CardContent>
+            </Card>
+          </motion.div>
+
+          {/* Recent Activity */}
+          {recentCompletions.length > 0 && (
+            <motion.div
+              initial={{ opacity: 0, x: 20 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ delay: 0.5 }}
+            >
+              <Card>
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <Clock className="h-5 w-5" />
+                    Recent Activity
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-3">
+                    {recentCompletions.slice(0, 3).map((completion, index) => (
+                      <div key={index} className="text-sm">
+                        <div className="font-medium text-navara-navy dark:text-white">
+                          {completion.teamName}
+                        </div>
+                        <div className="text-github-dark-gray dark:text-github-light-gray">
+                          +{completion.points} points
+                        </div>
+                        <div className="text-xs text-gray-500 dark:text-gray-500">
+                          {new Date(completion.timestamp).toLocaleTimeString()}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </CardContent>
+              </Card>
+            </motion.div>
+          )}
+        </div>
+      </div>
+
+      {/* Challenge Detail Modal */}
+      <ChallengeDetailModal
+        challenge={selectedChallenge}
+        isOpen={showDetailModal}
+        onClose={() => setShowDetailModal(false)}
+        onComplete={() => handleCompleteChallenge(selectedChallenge?.id)}
+        onIncomplete={() => handleIncompleteChallenge(selectedChallenge?.id)}
+        isCompleted={selectedChallenge ? completedChallenges.has(selectedChallenge.id) : false}
+      />
+    </div>
+  );
+};
+
+export default TeamView;

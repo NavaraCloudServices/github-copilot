@@ -1,0 +1,6 @@
+environment = "dev"
+location = "East US"
+resource_group_name = "rg-leaderboard-dev"
+postgresql_admin_username = "psqladmin"
+postgresql_admin_password = "your-super-secret-password"
+container_image = "acracaleaderboarddev.azurecr.io/leaderboard:latest"

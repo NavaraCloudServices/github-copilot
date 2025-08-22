@@ -1,0 +1,70 @@
+version: '3.8'
+
+services:
+  leaderboard-server:
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+    container_name: leaderboard-server-dev
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=development
+      - PORT=3000
+      - SESSION_SECRET=dev-secret-key
+      - LOG_LEVEL=debug
+      - CLIENT_URL=http://localhost:5173
+    volumes:
+      # Mount source for development
+      - ./server:/app/server
+      - ./package.json:/app/package.json
+      - ./package-lock.json:/app/package-lock.json
+      # Persist database
+      - leaderboard-dev-data:/app/server/database
+      # Persist logs
+      - leaderboard-dev-logs:/app/logs
+      # Node modules cache
+      - node_modules_cache:/app/node_modules
+    restart: unless-stopped
+    networks:
+      - leaderboard-dev-network
+    healthcheck:
+      test: ["CMD-SHELL", "wget --no-verbose --tries=1 --spider http://localhost:3000/health || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+  leaderboard-client:
+    build:
+      context: ./client
+      dockerfile: Dockerfile.dev
+    container_name: leaderboard-client-dev
+    ports:
+      - "5173:5173"
+    environment:
+      - VITE_API_URL=http://localhost:3000
+      - VITE_SERVER_URL=http://localhost:3000
+    volumes:
+      # Mount source for development
+      - ./client:/app
+      - client_node_modules_cache:/app/node_modules
+    restart: unless-stopped
+    networks:
+      - leaderboard-dev-network
+    depends_on:
+      - leaderboard-server
+
+volumes:
+  leaderboard-dev-data:
+    driver: local
+  leaderboard-dev-logs:
+    driver: local
+  node_modules_cache:
+    driver: local
+  client_node_modules_cache:
+    driver: local
+
+networks:
+  leaderboard-dev-network:
+    driver: bridge
