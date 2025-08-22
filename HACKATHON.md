@@ -32,7 +32,6 @@ We have demonstrated GitHub Copilot's main features; however,
 
 >You can cheat but is that fun? It is about learning.
 
-
 ## If you did not bring your own code
 
 If you do not bring your own code, you can have a look at the [Ground School](./GROUNDSCHOOL.md#challenges-instructions) challenges to get some inspiration what you can do
