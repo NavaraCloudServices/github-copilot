@@ -1,15 +1,8 @@
 name: Build, Push, and Deploy Leaderboard to Container Apps
 
 on:
-  # Stabalize when the workflow is stable
   workflow_dispatch:
   push:
-    branches: [main]
-    paths:
-      - "hackathon/leaderboard/**"
-      - "!hackathon/leaderboard/terraform/**"
-
-  pull_request:
     branches: [main]
     paths:
       - "hackathon/leaderboard/**"
