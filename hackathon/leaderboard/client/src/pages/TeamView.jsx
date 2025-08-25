@@ -429,12 +429,14 @@ const TeamView = () => {
   }
 
   const currentStatus = leaderboardData?.status || leaderboard.status;
-  const challenges = leaderboard.challenges?.challenges || [];
+  const allChallenges = leaderboard.challenges?.challenges || [];
+  // Filter out disabled challenges from the base set
+  const challenges = allChallenges.filter(challenge => challenge.enabled !== false);
   const categories = leaderboard.challenges?.categories || [];
   const currentTeam = teams.find(t => t.id === user.teamId);
   const teamRank = teams.findIndex(t => t.id === user.teamId) + 1;
 
-  // Get unique skill levels from challenges
+  // Get unique skill levels from enabled challenges only
   const skillLevels = [...new Set(challenges.map(challenge => challenge.skill_level))].filter(Boolean).sort();
 
   // Filter challenges

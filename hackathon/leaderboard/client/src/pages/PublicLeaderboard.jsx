@@ -304,7 +304,10 @@ const PublicLeaderboard = () => {
   }
 
   const currentStatus = leaderboardData?.status || leaderboard.status;
-  const totalChallenges = leaderboard.challenges?.challenges?.length || 0;
+  const allChallenges = leaderboard.challenges?.challenges || [];
+  // Only count enabled challenges for statistics
+  const enabledChallenges = allChallenges.filter(challenge => challenge.enabled !== false);
+  const totalChallenges = enabledChallenges.length;
   const totalPoints = leaderboard.challenges?.metadata?.total_points || 0;
 
   return (

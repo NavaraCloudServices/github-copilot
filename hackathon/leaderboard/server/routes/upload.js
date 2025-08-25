@@ -41,11 +41,16 @@ router.post('/challenges', upload.single('challenges'), async (req, res, next) =
 
     logger.info('Challenges JSON uploaded and validated successfully');
 
+    // Calculate enabled vs total challenges
+    const allChallenges = challengesData.challenges || [];
+    const enabledChallenges = allChallenges.filter(challenge => challenge.enabled !== false);
+
     res.json({
       message: 'Challenges uploaded successfully',
       challenges: challengesData,
       metadata: {
-        totalChallenges: challengesData.challenges?.length || 0,
+        totalChallenges: allChallenges.length,
+        enabledChallenges: enabledChallenges.length,
         categories: challengesData.categories?.length || 0,
         totalPoints: challengesData.metadata?.total_points || 0
       }
