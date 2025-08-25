@@ -1,7 +1,14 @@
 # TODO list for Leaderboard
 
+## Functional
+
+- [ ] Split up categories and skill-level
+- [ ] Fix card colour based on category
+
+## Technical
+
 - [ ] Update dependencies root
-- [ ] Fix missing package-lock.json in root and fix docker file with npm ci (back-end)
+- [X] Fix missing package-lock.json in root and fix docker file with npm ci (back-end)
 - [ ] Update dependencies in client
 - [ ] Update dependabot configuration for Leaderboard
 - [ ] Fix security vulnerabilities (o.a. CORS) pointed out by Code Scanning
