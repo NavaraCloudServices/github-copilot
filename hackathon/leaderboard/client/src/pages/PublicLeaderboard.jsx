@@ -347,31 +347,7 @@ const PublicLeaderboard = () => {
             </div>
 
             <div className="flex items-center gap-4">
-              {/* Live indicator */}
-              <motion.div
-                animate={{ scale: [1, 1.05, 1] }}
-                transition={{ duration: 2, repeat: Infinity }}
-                className={`flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium ${
-                  connected 
-                    ? 'bg-green-100 text-green-700 dark:bg-green-900 dark:text-green-300' 
-                    : 'bg-red-100 text-red-700 dark:bg-red-900 dark:text-red-300'
-                }`}
-              >
-                <div className={`w-2 h-2 rounded-full ${connected ? 'bg-green-500' : 'bg-red-500'}`} />
-                {connected ? 'LIVE' : 'DISCONNECTED'}
-              </motion.div>
-
-              {/* Status badge */}
-              <div className={`px-4 py-2 rounded-full text-sm font-medium ${
-                currentStatus === 'started' ? 'bg-blue-100 text-blue-700 dark:bg-blue-900 dark:text-blue-300' :
-                currentStatus === 'paused' ? 'bg-yellow-100 text-yellow-700 dark:bg-yellow-900 dark:text-yellow-300' :
-                currentStatus === 'ended' ? 'bg-gray-100 text-gray-700 dark:bg-gray-900 dark:text-gray-300' :
-                'bg-purple-100 text-purple-700 dark:bg-purple-900 dark:text-purple-300'
-              }`}>
-                {currentStatus === 'active' ? 'READY TO START' : 
-                 currentStatus === 'started' ? 'IN PROGRESS' :
-                 currentStatus === 'paused' ? 'PAUSED' : 'ENDED'}
-              </div>
+              {/* Status indicators removed */}
             </div>
           </div>
         </div>

@@ -484,24 +484,7 @@ const TeamView = () => {
         </div>
 
         <div className="flex items-center gap-3">
-          <div className={`flex items-center gap-2 px-3 py-1 rounded-full text-sm ${
-            connected ? 'bg-green-100 text-green-700 dark:bg-green-900 dark:text-green-300' : 
-            'bg-red-100 text-red-700 dark:bg-red-900 dark:text-red-300'
-          }`}>
-            <div className={`w-2 h-2 rounded-full ${connected ? 'bg-green-500' : 'bg-red-500'}`} />
-            {connected ? 'Live' : 'Disconnected'}
-          </div>
-
-          <div className={`px-3 py-1 rounded-full text-sm font-medium ${
-            currentStatus === 'started' ? 'bg-blue-100 text-blue-700 dark:bg-blue-900 dark:text-blue-300' :
-            currentStatus === 'paused' ? 'bg-yellow-100 text-yellow-700 dark:bg-yellow-900 dark:text-yellow-300' :
-            currentStatus === 'ended' ? 'bg-gray-100 text-gray-700 dark:bg-gray-900 dark:text-gray-300' :
-            'bg-purple-100 text-purple-700 dark:bg-purple-900 dark:text-purple-300'
-          }`}>
-            {currentStatus === 'active' ? 'Ready' : 
-             currentStatus === 'started' ? 'In Progress' :
-             currentStatus === 'paused' ? 'Paused' : 'Ended'}
-          </div>
+          {/* Status indicators removed */}
         </div>
       </motion.div>
 
