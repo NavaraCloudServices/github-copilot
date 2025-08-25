@@ -1,3 +1,7 @@
+#leaderboard
+/data/*
+
+
 terraform.tfstate
 terraform.tfstate.backup
 challenges.csv

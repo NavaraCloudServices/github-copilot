@@ -40,6 +40,9 @@ A modern web application for hosting team-based challenges and competitions with
    ```bash
    # Install server dependencies
    npm install
+
+   # Create data directory
+   mkdir data
    
    # Install client dependencies
    cd client && npm install
