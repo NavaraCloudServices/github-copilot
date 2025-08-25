@@ -27,10 +27,49 @@ We have demonstrated GitHub Copilot's main features; however,
 - You can work alone or in pairs (we recommend this)
 - Go to our [Leaderboard app](https://ca-leaderboard-prd.livelyplant-1fbb6cbd.westeurope.azurecontainerapps.io/)
 - Join a Competition using the 'Access Code' provided. Name your team and add team members
-- Use the app to track your Challenges. 
+- Use the app to track your Challenges.
 - Challenges are capabilities for what you can do with GitHub Copilot. Let the Challenges guide your exploration!
 
->You can cheat but is that fun? It is about learning.
+> You can cheat but is that fun? It is about learning and experimenting!
+
+## Resources
+
+Here are some useful links that are related to the Challenges:
+
+| Purpose                                 | URL                                                                                                                |
+| --------------------------------------- | ------------------------------------------------------------------------------------------------------------------ |
+| Meta prompting technique                | https://cookbook.openai.com/examples/enhance_your_prompts_with_meta_prompting                                      |
+| Role prompting overview                 | https://learnprompting.org/docs/basics/roles                                                                       |
+| Model comparison (task selection)       | https://docs.github.com/en/copilot/reference/ai-models/model-comparison                                            |
+| Prompt engineering concepts             | https://docs.github.com/en/copilot/concepts/prompt-engineering                                                     |
+| Code documentation techniques           | https://docs.github.com/en/copilot/tutorials/copilot-chat-cookbook/document-code                                   |
+| Exploring functionality implementations | https://docs.github.com/en/copilot/tutorials/copilot-chat-cookbook/analyze-functionality/explore-implementations   |
+| Chat features usage                     | https://docs.github.com/en/copilot/how-tos/use-chat/use-chat-in-ide                                                |
+| Selection feature                       | https://docs.github.com/en/copilot/how-tos/use-chat/use-chat-in-ide#asking-questions-about-specific-pieces-of-code |
+| PR summaries feature                    | https://docs.github.com/en/copilot/how-tos/use-copilot-for-common-tasks/create-a-pr-summary                        |
+| Responsible PR use                      | https://docs.github.com/en/copilot/responsible-use/pull-request-summaries                                          |
+| Code review agent feature               | https://docs.github.com/en/copilot/how-tos/use-copilot-agents/request-a-code-review/use-code-review                |
+| Responsible code review use             | https://docs.github.com/en/copilot/responsible-use/code-review                                                     |
+| Copilot Spaces concept                  | https://docs.github.com/en/copilot/concepts/spaces                                                                 |
+| Speed up development tutorial           | https://docs.github.com/en/copilot/tutorials/speed-up-development-work                                             |
+| GitHub Spark intro                      | https://docs.github.com/en/copilot/tutorials/easy-apps-with-spark                                                  |
+| Build apps with Spark                   | https://docs.github.com/en/copilot/tutorials/build-apps-with-spark                                                 |
+| Get code suggestions how-to             | https://docs.github.com/en/copilot/how-tos/get-code-suggestions/get-code-suggestions                               |
+| Keyboard shortcuts reference            | https://docs.github.com/en/copilot/reference/keyboard-shortcuts                                                    |
+| Copilot cheat sheet & slash commands    | https://docs.github.com/en/copilot/reference/cheat-sheet                                                           |
+| Prompt ideas (Chat getting started)     | https://docs.github.com/en/copilot/get-started/getting-started-with-prompts-for-copilot-chat                       |
+| Agent mode (VS Code)                    | https://code.visualstudio.com/docs/copilot/chat/chat-agent-mode                                                    |
+| Custom instructions (VS Code)           | https://code.visualstudio.com/docs/copilot/copilot-customization#_custom-instructions                              |
+
+## MCP Server Links (Specification & Planning)
+
+Big list of MCP servers: https://github.com/modelcontextprotocol/
+
+Examples:
+- Jira MCP Server: https://support.atlassian.com/rovo/docs/getting-started-with-the-atlassian-remote-mcp-server/
+- Azure DevOps MCP: https://github.com/microsoft/azure-devops-mcp
+- GitHub Issues/Projects MCP: https://github.com/github/github-mcp-server
+- GitLab MCP Server: https://docs.gitlab.com/user/gitlab_duo/model_context_protocol/mcp_server/
 
 ## If you did not bring your own code
 
