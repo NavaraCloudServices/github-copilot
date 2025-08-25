@@ -241,8 +241,8 @@ const JoinPage = () => {
 
   const handleLogout = async () => {
     await logout();
-    // After logout, stay on the same join page to allow rejoin
-    window.location.reload();
+    // After logout, navigate to root page
+    navigate('/');
   };
 
   if (loading) {

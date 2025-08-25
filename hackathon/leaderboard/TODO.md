@@ -2,8 +2,9 @@
 
 ## Functional
 
-- [ ] Split up categories and skill-level
-- [ ] Fix card colour based on category
+- [X] Split up categories and skill-level
+- [X] Fix card colour based on category
+- [X] Fix Logout button
 
 ## Technical
 
