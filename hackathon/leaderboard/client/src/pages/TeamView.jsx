@@ -322,6 +322,7 @@ const TeamView = () => {
   const [selectedChallenge, setSelectedChallenge] = useState(null);
   const [showDetailModal, setShowDetailModal] = useState(false);
   const [filter, setFilter] = useState('all');
+  const [skillLevelFilter, setSkillLevelFilter] = useState('all');
   const [searchQuery, setSearchQuery] = useState('');
   const [copiedTeamCode, setCopiedTeamCode] = useState(false);
 
@@ -433,6 +434,9 @@ const TeamView = () => {
   const currentTeam = teams.find(t => t.id === user.teamId);
   const teamRank = teams.findIndex(t => t.id === user.teamId) + 1;
 
+  // Get unique skill levels from challenges
+  const skillLevels = [...new Set(challenges.map(challenge => challenge.skill_level))].filter(Boolean).sort();
+
   // Filter challenges
   const filteredChallenges = challenges.filter(challenge => {
     const matchesFilter = filter === 'all' || 
@@ -440,11 +444,13 @@ const TeamView = () => {
       (filter === 'incomplete' && !completedChallenges.has(challenge.id)) ||
       (filter !== 'all' && filter !== 'completed' && filter !== 'incomplete' && challenge.category === filter);
 
+    const matchesSkillLevel = skillLevelFilter === 'all' || challenge.skill_level === skillLevelFilter;
+
     const matchesSearch = searchQuery === '' || 
       challenge.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
       challenge.description.toLowerCase().includes(searchQuery.toLowerCase());
 
-    return matchesFilter && matchesSearch;
+    return matchesFilter && matchesSkillLevel && matchesSearch;
   });
 
   return (
@@ -623,18 +629,32 @@ const TeamView = () => {
                       />
                     </div>
                     
-                    {/* Filter */}
+                    {/* Category Filter */}
                     <select
                       value={filter}
                       onChange={(e) => setFilter(e.target.value)}
                       className="input md:w-48"
                     >
-                      <option value="all">All Challenges</option>
+                      <option value="all">All Categories</option>
                       <option value="completed">Completed</option>
                       <option value="incomplete">Incomplete</option>
                       {categories.map(category => (
                         <option key={category.id} value={category.id}>
                           {category.name}
+                        </option>
+                      ))}
+                    </select>
+
+                    {/* Skill Level Filter */}
+                    <select
+                      value={skillLevelFilter}
+                      onChange={(e) => setSkillLevelFilter(e.target.value)}
+                      className="input md:w-40"
+                    >
+                      <option value="all">All Levels</option>
+                      {skillLevels.map(skillLevel => (
+                        <option key={skillLevel} value={skillLevel}>
+                          {skillLevel}
                         </option>
                       ))}
                     </select>
