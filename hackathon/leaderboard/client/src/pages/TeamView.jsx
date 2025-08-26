@@ -442,7 +442,7 @@ const TeamView = () => {
   // Get unique skill levels from enabled challenges only
   const skillLevels = [...new Set(challenges.map(challenge => challenge.skill_level))].filter(Boolean).sort();
 
-  // Filter challenges
+  // Filter and sort challenges
   const filteredChallenges = challenges.filter(challenge => {
     const matchesFilter = filter === 'all' || 
       (filter === 'completed' && completedChallenges.has(challenge.id)) ||
@@ -456,6 +456,30 @@ const TeamView = () => {
       challenge.description.toLowerCase().includes(searchQuery.toLowerCase());
 
     return matchesFilter && matchesSkillLevel && matchesSearch;
+  }).sort((a, b) => {
+    // First sort by category (alphabetically by category name)
+    const categoryA = categories.find(cat => cat.id === a.category)?.name || a.category;
+    const categoryB = categories.find(cat => cat.id === b.category)?.name || b.category;
+    
+    if (categoryA !== categoryB) {
+      return categoryA.localeCompare(categoryB);
+    }
+    
+    // Then sort by skill level (Beginner -> Intermediate -> Advanced)
+    const skillLevelOrder = { 
+      'beginner': 1, 
+      'intermediate': 2, 
+      'advanced': 3 
+    };
+    const skillA = skillLevelOrder[a.skill_level?.toLowerCase()] || 999;
+    const skillB = skillLevelOrder[b.skill_level?.toLowerCase()] || 999;
+    
+    if (skillA !== skillB) {
+      return skillA - skillB;
+    }
+    
+    // Finally, sort by title as a tiebreaker
+    return a.title.localeCompare(b.title);
   });
 
   // Tabs removed – only dashboard content is rendered

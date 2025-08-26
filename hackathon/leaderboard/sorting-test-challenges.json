@@ -1,0 +1,126 @@
+{
+  "metadata": {
+    "title": "Sorting Test Hackathon",
+    "description": "A test competition to verify sorting functionality with multiple challenges",
+    "version": "1.0.0",
+    "total_points": 2000,
+    "duration_hours": 8
+  },
+  "categories": [
+    {
+      "id": "frontend",
+      "name": "Frontend Development",
+      "icon": "🎨",
+      "color": "#3B82F6"
+    },
+    {
+      "id": "backend",
+      "name": "Backend Development",
+      "icon": "⚙️",
+      "color": "#10B981"
+    },
+    {
+      "id": "ai",
+      "name": "AI & Machine Learning",
+      "icon": "🤖",
+      "color": "#8B5CF6"
+    }
+  ],
+  "challenges": [
+    {
+      "id": "challenge-frontend-1",
+      "category": "frontend",
+      "title": "Advanced React Patterns",
+      "short_name": "React Patterns",
+      "description": "Implement advanced React patterns like render props and compound components",
+      "skill_level": "Advanced",
+      "points": 300,
+      "enabled": true
+    },
+    {
+      "id": "challenge-frontend-2",
+      "category": "frontend",
+      "title": "Basic HTML Structure",
+      "short_name": "HTML Basics",
+      "description": "Create a semantic HTML structure for a blog post",
+      "skill_level": "Beginner",
+      "points": 50,
+      "enabled": true
+    },
+    {
+      "id": "challenge-frontend-3",
+      "category": "frontend",
+      "title": "CSS Grid Layout",
+      "short_name": "CSS Grid",
+      "description": "Build a responsive layout using CSS Grid",
+      "skill_level": "Intermediate",
+      "points": 150,
+      "enabled": true
+    },
+    {
+      "id": "challenge-backend-1",
+      "category": "backend",
+      "title": "Database Optimization",
+      "short_name": "DB Optimization",
+      "description": "Optimize database queries for better performance",
+      "skill_level": "Advanced",
+      "points": 250,
+      "enabled": true
+    },
+    {
+      "id": "challenge-backend-2",
+      "category": "backend",
+      "title": "Simple REST API",
+      "short_name": "REST API",
+      "description": "Create a basic REST API with CRUD operations",
+      "skill_level": "Beginner",
+      "points": 100,
+      "enabled": true
+    },
+    {
+      "id": "challenge-backend-3",
+      "category": "backend",
+      "title": "Authentication System",
+      "short_name": "Auth System",
+      "description": "Implement JWT-based authentication",
+      "skill_level": "Intermediate",
+      "points": 200,
+      "enabled": true
+    },
+    {
+      "id": "challenge-ai-1",
+      "category": "ai",
+      "title": "Neural Network from Scratch",
+      "short_name": "Neural Network",
+      "description": "Build a simple neural network without using frameworks",
+      "skill_level": "Advanced",
+      "points": 400,
+      "enabled": true
+    },
+    {
+      "id": "challenge-ai-2",
+      "category": "ai",
+      "title": "Chatbot Integration",
+      "short_name": "Chatbot",
+      "description": "Integrate a simple chatbot using OpenAI API",
+      "skill_level": "Beginner",
+      "points": 120,
+      "enabled": true
+    },
+    {
+      "id": "challenge-ai-3",
+      "category": "ai",
+      "title": "Machine Learning Pipeline",
+      "short_name": "ML Pipeline",
+      "description": "Build a complete ML pipeline with data preprocessing and model training",
+      "skill_level": "Intermediate",
+      "points": 280,
+      "enabled": true
+    }
+  ],
+  "resources": [
+    { "name": "React Documentation", "url": "https://react.dev/learn" },
+    { "name": "Node.js Best Practices", "url": "https://github.com/goldbergyoni/nodebestpractices" },
+    { "name": "Machine Learning Guide", "url": "https://scikit-learn.org/stable/user_guide.html" }
+  ]
+}
