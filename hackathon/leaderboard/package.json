@@ -11,7 +11,6 @@
     "build": "cd client && npm run build",
     "start": "node server/index.js",
     "test": "vitest",
-    "lint": "eslint server/**/*.js client/src/**/*.{js,jsx}",
     "format": "prettier --write ."
   },
   "keywords": [
