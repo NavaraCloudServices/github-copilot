@@ -60,5 +60,13 @@
       "skill_level": "Advanced",
       "points": 300
     }
+  ],
+  "resources": [
+    { "name": "Meta prompting technique", "url": "https://cookbook.openai.com/examples/enhance_your_prompts_with_meta_prompting" },
+    { "name": "Role prompting overview", "url": "https://learnprompting.org/docs/basics/roles" },
+    { "name": "React Documentation", "url": "https://react.dev/learn" },
+    { "name": "Node.js Best Practices", "url": "https://github.com/goldbergyoni/nodebestpractices" },
+    { "name": "JavaScript Guide - MDN", "url": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide" },
+    { "name": "GitHub Copilot Documentation", "url": "https://docs.github.com/en/copilot" }
   ]
 }
