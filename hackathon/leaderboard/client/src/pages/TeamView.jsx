@@ -18,8 +18,7 @@ import {
   Eye,
   Copy,
   Check,
-  Hash,
-  Book
+  Hash
 } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
 import useWebSocket from '../hooks/useWebSocket';
@@ -30,8 +29,7 @@ import Card, { CardHeader, CardTitle, CardContent } from '../components/Common/C
 import LoadingSpinner from '../components/Common/LoadingSpinner';
 import Modal from '../components/Common/Modal';
 import { TextWithLinks } from '../utils/textUtils.jsx';
-import PublicLeaderboard from './PublicLeaderboard';
-import Resources from './Resources';
+// Removed additional tabs (PublicLeaderboard, Resources)
 
 // Bingo Card Style Challenge Card Component
 const ChallengeCard = ({ challenge, isCompleted, onComplete, onIncomplete, onShowDetails, categories }) => {
@@ -328,7 +326,7 @@ const TeamView = () => {
   const [skillLevelFilter, setSkillLevelFilter] = useState('all');
   const [searchQuery, setSearchQuery] = useState('');
   const [copiedTeamCode, setCopiedTeamCode] = useState(false);
-  const [activeTab, setActiveTab] = useState('dashboard');
+  // Single tab view – removed other tabs
 
   const {
     connected,
@@ -437,7 +435,7 @@ const TeamView = () => {
   // Filter out disabled challenges from the base set
   const challenges = allChallenges.filter(challenge => challenge.enabled !== false);
   const categories = leaderboard.challenges?.categories || [];
-  const resources = leaderboard.challenges?.resources || [];
+  // Removed resources tab: resources variable no longer needed
   const currentTeam = teams.find(t => t.id === user.teamId);
   const teamRank = teams.findIndex(t => t.id === user.teamId) + 1;
 
@@ -460,26 +458,7 @@ const TeamView = () => {
     return matchesFilter && matchesSkillLevel && matchesSearch;
   });
 
-  const tabs = [
-    {
-      id: 'dashboard',
-      name: 'Team Dashboard',
-      icon: Users,
-      description: 'Your team progress and challenges'
-    },
-    {
-      id: 'leaderboard',
-      name: 'Public Leaderboard',
-      icon: Trophy,
-      description: 'View all teams and rankings'
-    },
-    {
-      id: 'resources',
-      name: 'Resources',
-      icon: Book,
-      description: 'Helpful learning materials'
-    }
-  ];
+  // Tabs removed – only dashboard content is rendered
 
   return (
     <div className="container mx-auto px-4 py-8 space-y-8">
@@ -514,49 +493,14 @@ const TeamView = () => {
         </div>
       </motion.div>
 
-      {/* Tab Navigation */}
+      {/* Dashboard Content (only tab) */}
       <motion.div
+        key="dashboard"
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.1 }}
+        exit={{ opacity: 0, y: -20 }}
+        transition={{ duration: 0.2 }}
       >
-        <div className="border-b border-gray-200 dark:border-gray-700">
-          <nav className="-mb-px flex space-x-8">
-            {tabs.map((tab) => {
-              const Icon = tab.icon;
-              const isActive = activeTab === tab.id;
-              
-              return (
-                <button
-                  key={tab.id}
-                  onClick={() => setActiveTab(tab.id)}
-                  className={`group inline-flex items-center gap-2 py-4 px-1 border-b-2 font-medium text-sm transition-colors ${
-                    isActive
-                      ? 'border-navara-blue text-navara-blue'
-                      : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 dark:text-gray-400 dark:hover:text-gray-200'
-                  }`}
-                >
-                  <Icon className={`h-4 w-4 transition-colors ${
-                    isActive ? 'text-navara-blue' : 'text-gray-400 group-hover:text-gray-500'
-                  }`} />
-                  {tab.name}
-                </button>
-              );
-            })}
-          </nav>
-        </div>
-      </motion.div>
-
-      {/* Tab Content */}
-      <AnimatePresence mode="wait">
-        {activeTab === 'dashboard' && (
-          <motion.div
-            key="dashboard"
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -20 }}
-            transition={{ duration: 0.2 }}
-          >
 
       <div className="grid lg:grid-cols-4 gap-8">
         {/* Main Content */}
@@ -954,33 +898,7 @@ const TeamView = () => {
           )}
         </div>
       </div>
-          </motion.div>
-        )}
-
-        {activeTab === 'leaderboard' && (
-          <motion.div
-            key="leaderboard"
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -20 }}
-            transition={{ duration: 0.2 }}
-          >
-            <PublicLeaderboard />
-          </motion.div>
-        )}
-
-        {activeTab === 'resources' && (
-          <motion.div
-            key="resources"
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -20 }}
-            transition={{ duration: 0.2 }}
-          >
-            <Resources resources={resources} />
-          </motion.div>
-        )}
-      </AnimatePresence>
+  </motion.div>
 
       {/* Challenge Detail Modal */}
       <ChallengeDetailModal

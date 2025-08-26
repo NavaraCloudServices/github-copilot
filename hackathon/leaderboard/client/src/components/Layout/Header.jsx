@@ -79,6 +79,18 @@ const Header = () => {
                     Public Board
                   </Link>
                 )}
+                {user.leaderboardId && (
+                  <Link
+                    to={`/resources/${user.leaderboardId}`}
+                    className={`text-sm font-medium transition-colors ${
+                      isActive(`/resources/${user.leaderboardId}`)
+                        ? 'text-navara-blue'
+                        : 'text-white hover:text-navara-blue'
+                    }`}
+                  >
+                    Learning Resources
+                  </Link>
+                )}
               </>
             )}
           </nav>
@@ -175,6 +187,15 @@ const Header = () => {
                       onClick={() => setIsMenuOpen(false)}
                     >
                       Public Board
+                    </Link>
+                  )}
+                  {user.leaderboardId && (
+                    <Link
+                      to={`/resources/${user.leaderboardId}`}
+                      className="text-white hover:text-navara-blue font-medium"
+                      onClick={() => setIsMenuOpen(false)}
+                    >
+                      Learning Resources
                     </Link>
                   )}
                 </>

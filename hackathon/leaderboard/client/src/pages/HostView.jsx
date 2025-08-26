@@ -253,7 +253,7 @@ const HostView = () => {
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.2 }}
-        className="grid md:grid-cols-3 gap-6"
+        className="grid md:grid-cols-2 gap-6"
       >
         <Card>
           <CardContent className="text-center p-6">
@@ -275,18 +275,6 @@ const HostView = () => {
             </div>
             <div className="text-sm text-github-dark-gray dark:text-github-light-gray">
               Recent Completions
-            </div>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardContent className="text-center p-6">
-            <Clock className="h-8 w-8 text-navara-blue mx-auto mb-2" />
-            <div className="text-2xl font-bold text-navara-navy dark:text-white">
-              {leaderboard.challenges?.metadata?.duration_hours || 0}h
-            </div>
-            <div className="text-sm text-github-dark-gray dark:text-github-light-gray">
-              Duration
             </div>
           </CardContent>
         </Card>

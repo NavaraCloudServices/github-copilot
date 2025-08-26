@@ -216,13 +216,19 @@ const ActivityTicker = ({ recentCompletions }) => {
               transition={{ delay: index * 0.1 }}
               className="flex items-center justify-between p-2 bg-white dark:bg-github-dark-gray rounded-lg text-sm"
             >
-              <div>
-                <span className="font-medium text-navara-navy dark:text-white">
-                  {completion.teamName}
-                </span>
-                <span className="text-github-dark-gray dark:text-github-light-gray ml-1">
-                  completed a challenge
-                </span>
+              <div className="flex flex-col">
+                <div>
+                  <span className="font-medium text-navara-navy dark:text-white">
+                    {completion.teamName}
+                  </span>
+                  <span className="text-github-dark-gray dark:text-github-light-gray ml-1">
+                    completed
+                  </span>
+                  <span className="ml-1 font-medium text-blue-600 dark:text-blue-400">
+                    {completion.challengeTitle || completion.challengeName || completion.challengeId}
+                  </span>
+                </div>
+                {/* Timestamp removed per request */}
               </div>
               <div className="flex items-center gap-2">
                 <span className="font-bold text-green-600 dark:text-green-400">
@@ -337,12 +343,6 @@ const PublicLeaderboard = () => {
                   <Trophy className="h-4 w-4" />
                   {totalPoints} total points
                 </span>
-                {leaderboard.challenges?.metadata?.duration_hours && (
-                  <span className="flex items-center gap-1">
-                    <Clock className="h-4 w-4" />
-                    {leaderboard.challenges.metadata.duration_hours}h duration
-                  </span>
-                )}
               </div>
             </div>
 
@@ -399,18 +399,31 @@ const PublicLeaderboard = () => {
               <ActivityTicker recentCompletions={recentCompletions} />
             </motion.div>
 
-            {/* Competition Info */}
+            {/* Join This Competition (moved above competition info) */}
             <motion.div
               initial={{ opacity: 0, x: 20 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ delay: 0.4 }}
+            >
+              <QRCodeJoin
+                leaderboardId={leaderboardId}
+                accessCode={leaderboard.accessCode}
+                leaderboardName={leaderboard.name}
+              />
+            </motion.div>
+
+            {/* Competition Info */}
+            <motion.div
+              initial={{ opacity: 0, x: 20 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ delay: 0.5 }}
               className="bg-white dark:bg-github-dark-gray rounded-xl p-6 border border-github-light-gray dark:border-gray-700"
             >
               <h3 className="font-semibold text-navara-navy dark:text-white mb-4 flex items-center gap-2">
                 <Trophy className="h-5 w-5" />
                 Competition Info
               </h3>
-              
+
               {leaderboard.challenges?.metadata?.description && (
                 <p className="text-sm text-github-dark-gray dark:text-github-light-gray mb-4">
                   {leaderboard.challenges.metadata.description}
@@ -420,7 +433,7 @@ const PublicLeaderboard = () => {
               <div className="space-y-3">
                 {leaderboard.challenges?.categories?.map((category) => (
                   <div key={category.id} className="flex items-center gap-3">
-                    <div 
+                    <div
                       className="w-4 h-4 rounded-full"
                       style={{ backgroundColor: category.color }}
                     />
@@ -441,19 +454,6 @@ const PublicLeaderboard = () => {
                   </ul>
                 </div>
               )}
-            </motion.div>
-
-            {/* QR Code for joining */}
-            <motion.div
-              initial={{ opacity: 0, x: 20 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ delay: 0.5 }}
-            >
-              <QRCodeJoin
-                leaderboardId={leaderboardId}
-                accessCode={leaderboard.accessCode}
-                leaderboardName={leaderboard.name}
-              />
             </motion.div>
           </div>
         </div>
