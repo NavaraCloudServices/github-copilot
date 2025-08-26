@@ -74,6 +74,7 @@ const Modal = ({
             className={cn(
               'relative w-full bg-white dark:bg-gray-900 rounded-xl shadow-2xl',
               'border border-gray-200 dark:border-gray-800',
+              'max-h-[90vh] flex flex-col',
               sizeClasses[size],
               className
             )}
@@ -84,7 +85,7 @@ const Modal = ({
           >
             {/* Header */}
             {(title || showCloseButton) && (
-              <div className="flex items-center justify-between p-6 border-b border-gray-200 dark:border-gray-800">
+              <div className="flex items-center justify-between p-6 border-b border-gray-200 dark:border-gray-800 flex-shrink-0">
                 <div>
                   {title && (
                     <h2 className="text-xl font-semibold text-gray-900 dark:text-gray-100">
@@ -112,7 +113,7 @@ const Modal = ({
             )}
 
             {/* Content */}
-            <div className="p-6">
+            <div className="p-6 overflow-y-auto flex-1">
               {children}
             </div>
           </motion.div>

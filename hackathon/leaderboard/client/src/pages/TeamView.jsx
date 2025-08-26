@@ -214,7 +214,7 @@ const ChallengeDetailModal = ({ challenge, isOpen, onClose, onComplete, onIncomp
       isOpen={isOpen}
       onClose={onClose}
       title={challenge.title}
-      size="lg"
+      size="full"
     >
       <div className="space-y-6">
         {/* Challenge Info */}
