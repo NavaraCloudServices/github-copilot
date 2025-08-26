@@ -470,7 +470,7 @@ const TeamView = () => {
       >
         <div>
           <h1 className="text-3xl font-bold text-navara-navy dark:text-white mb-2">
-            Team Dashboard
+            Team Dashboard{teamProgress?.teamName ? ` - ${teamProgress.teamName}` : ''}
           </h1>
           <div className="flex items-center gap-4 text-sm text-github-dark-gray dark:text-github-light-gray">
             <span className="flex items-center gap-1">
@@ -881,7 +881,7 @@ const TeamView = () => {
                     {recentCompletions.slice(0, 3).map((completion, index) => (
                       <div key={index} className="text-sm">
                         <div className="font-medium text-navara-navy dark:text-white">
-                          {completion.teamName}
+                          {completion.challengeTitle}
                         </div>
                         <div className="text-github-dark-gray dark:text-github-light-gray">
                           +{completion.points} points

@@ -371,10 +371,10 @@ const HostView = () => {
                     >
                       <div className="flex-1">
                         <div className="font-medium text-navara-navy dark:text-white">
-                          {completion.teamName || completion.team_name}
+                          {completion.teamName}
                         </div>
                         <div className="text-sm text-github-dark-gray dark:text-github-light-gray">
-                          {completion.challengeTitle || completion.challenge_id}
+                          {completion.challengeTitle}
                         </div>
                       </div>
                       <div className="text-right">

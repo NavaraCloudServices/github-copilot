@@ -207,37 +207,49 @@ const ActivityTicker = ({ recentCompletions }) => {
       </div>
       <div className="space-y-2">
         <AnimatePresence mode="popLayout">
-          {recentCompletions.slice(0, 5).map((completion, index) => (
-            <motion.div
-              key={`${completion.teamName}-${completion.challengeId}-${completion.timestamp}`}
-              initial={{ opacity: 0, x: -20 }}
-              animate={{ opacity: 1, x: 0 }}
-              exit={{ opacity: 0, x: 20 }}
-              transition={{ delay: index * 0.1 }}
-              className="flex items-center justify-between p-2 bg-white dark:bg-github-dark-gray rounded-lg text-sm"
-            >
-              <div className="flex flex-col">
-                <div>
-                  <span className="font-medium text-navara-navy dark:text-white">
-                    {completion.teamName}
-                  </span>
-                  <span className="text-github-dark-gray dark:text-github-light-gray ml-1">
-                    completed
-                  </span>
-                  <span className="ml-1 font-medium text-blue-600 dark:text-blue-400">
-                    {completion.challengeTitle || completion.challengeName || completion.challengeId}
-                  </span>
-                </div>
-                {/* Timestamp removed per request */}
-              </div>
-              <div className="flex items-center gap-2">
-                <span className="font-bold text-green-600 dark:text-green-400">
-                  +{completion.points}
-                </span>
-                <Zap className="h-4 w-4 text-yellow-500" />
-              </div>
-            </motion.div>
-          ))}
+          {[...recentCompletions]
+            .sort((a, b) => {
+              const ta = a.timestamp || a.completed_at || a.time || a.date;
+              const tb = b.timestamp || b.completed_at || b.time || b.date;
+              const da = new Date(ta);
+              const db = new Date(tb);
+              return db - da;
+            })
+            .slice(0, 5)
+            .map((completion, index) => {
+              const challengeLabel = completion.challengeTitle || completion.challengeName || completion.challengeId;
+              let dateTimeText = '';
+              const rawTs = completion.timestamp || completion.completed_at || completion.time || completion.date;
+              if (rawTs) {
+                const d = new Date(rawTs);
+                if (!isNaN(d.getTime())) {
+                  dateTimeText = d.toLocaleString();
+                }
+              }
+              return (
+                <motion.div
+                  key={`${completion.teamName}-${completion.challengeId}-${completion.timestamp}`}
+                  initial={{ opacity: 0, x: -20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  exit={{ opacity: 0, x: 20 }}
+                  transition={{ delay: index * 0.1 }}
+                  className="p-2 bg-white dark:bg-github-dark-gray rounded-lg text-xs sm:text-sm flex flex-col sm:flex-row sm:items-center sm:justify-between gap-1"
+                >
+                  <div className="flex-1 min-w-0">
+                    <span className="font-medium text-navara-navy dark:text-white">{completion.teamName}</span>
+                    <span className="mx-1 text-github-dark-gray dark:text-github-light-gray">•</span>
+                    <span className="font-medium text-blue-600 dark:text-blue-400 break-all">{challengeLabel}</span>
+                  </div>
+                  <div className="flex items-center gap-2 flex-shrink-0 text-github-dark-gray dark:text-github-light-gray">
+                    {dateTimeText && (
+                      <span className="whitespace-nowrap text-gray-500 dark:text-gray-500">{dateTimeText}</span>
+                    )}
+                    <span className="font-bold text-green-600 dark:text-green-400 whitespace-nowrap">+{completion.points}</span>
+                    <Zap className="h-4 w-4 text-yellow-500" />
+                  </div>
+                </motion.div>
+              );
+            })}
         </AnimatePresence>
       </div>
     </div>
