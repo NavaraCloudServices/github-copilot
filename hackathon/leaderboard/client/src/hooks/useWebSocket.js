@@ -65,7 +65,28 @@ export function useWebSocket(leaderboardId) {
       console.log('Received initial leaderboard data:', data);
       setLeaderboardData(data.leaderboard);
       setTeams(data.teams || []);
-      setRecentCompletions(data.recentCompletions || []);
+      // Normalize recent completions so UI can rely on consistent field names without changing API
+      try {
+        const challengesArray = data.challenges?.challenges || data.challenges || [];
+        const challengeLookup = Array.isArray(challengesArray)
+          ? challengesArray.reduce((acc, c) => { acc[c.id] = c; return acc; }, {})
+          : {};
+        const normalized = (data.recentCompletions || []).map(rc => {
+          const challengeId = rc.challengeId || rc.challenge_id;
+            return {
+              ...rc,
+              teamName: rc.teamName || rc.team_name || rc.team || rc.team_code, // fallbacks just in case
+              challengeId,
+              challengeTitle: rc.challengeTitle || rc.challenge_name || rc.challenge || challengeLookup[challengeId]?.title || challengeLookup[challengeId]?.name,
+              points: rc.points,
+              timestamp: rc.timestamp || rc.completed_at || rc.time || rc.date
+            };
+        });
+        setRecentCompletions(normalized);
+      } catch (e) {
+        console.warn('Failed to normalize recent completions:', e);
+        setRecentCompletions(data.recentCompletions || []);
+      }
     });
 
     socket.on('leaderboard:update', (data) => {

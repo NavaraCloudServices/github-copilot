@@ -29,17 +29,47 @@ import Card, { CardHeader, CardTitle, CardContent } from '../components/Common/C
 import LoadingSpinner from '../components/Common/LoadingSpinner';
 import Modal from '../components/Common/Modal';
 import { TextWithLinks } from '../utils/textUtils.jsx';
+// Removed additional tabs (PublicLeaderboard, Resources)
 
 // Bingo Card Style Challenge Card Component
-const ChallengeCard = ({ challenge, isCompleted, onComplete, onIncomplete, onShowDetails }) => {
-  const categoryColors = {
-    beginner: { bg: 'bg-green-100 dark:bg-green-900/30', border: 'border-green-300 dark:border-green-700', text: 'text-green-700 dark:text-green-300' },
-    intermediate: { bg: 'bg-yellow-100 dark:bg-yellow-900/30', border: 'border-yellow-300 dark:border-yellow-700', text: 'text-yellow-700 dark:text-yellow-300' },
-    advanced: { bg: 'bg-red-100 dark:bg-red-900/30', border: 'border-red-300 dark:border-red-700', text: 'text-red-700 dark:text-red-300' },
-    bonus: { bg: 'bg-purple-100 dark:bg-purple-900/30', border: 'border-purple-300 dark:border-purple-700', text: 'text-purple-700 dark:text-purple-300' }
+const ChallengeCard = ({ challenge, isCompleted, onComplete, onIncomplete, onShowDetails, categories }) => {
+  // Find the category object to get the color
+  const categoryObj = categories.find(cat => cat.id === challenge.category);
+  const categoryColor = categoryObj?.color || '#10B981'; // Default to green if not found
+  
+  // Generate dynamic styles based on category color
+  const getCategoryStyles = (color) => {
+    // Convert hex to RGB for opacity effects
+    const hexToRgb = (hex) => {
+      const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+      return result ? {
+        r: parseInt(result[1], 16),
+        g: parseInt(result[2], 16),
+        b: parseInt(result[3], 16)
+      } : { r: 16, g: 185, b: 129 }; // Default green
+    };
+    
+    const rgb = hexToRgb(color);
+    
+    // Check if we're in dark mode (simplified check)
+    const isDarkMode = document.documentElement.classList.contains('dark') || 
+                       window.matchMedia('(prefers-color-scheme: dark)').matches;
+    
+    return {
+      bg: `rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, ${isDarkMode ? 0.2 : 0.1})`,
+      border: `rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, ${isDarkMode ? 0.5 : 0.3})`,
+      text: color
+    };
   };
 
-  const categoryStyle = categoryColors[challenge.category] || categoryColors.beginner;
+  const categoryStyle = getCategoryStyles(categoryColor);
+
+  // Create CSS custom properties for dynamic theming
+  const cssVariables = {
+    '--category-color': categoryColor,
+    '--category-bg': categoryStyle.bg,
+    '--category-border': categoryStyle.border
+  };
 
   return (
     <motion.div
@@ -49,11 +79,16 @@ const ChallengeCard = ({ challenge, isCompleted, onComplete, onIncomplete, onSho
       whileHover={{ scale: isCompleted ? 1 : 1.05 }}
       whileTap={{ scale: 0.95 }}
       transition={{ duration: 0.2 }}
-      className={`relative aspect-square rounded-lg border-2 transition-all duration-200 cursor-pointer ${
+      className={`relative aspect-square rounded-lg border-2 transition-all duration-200 cursor-pointer hover:shadow-lg ${
         isCompleted 
           ? 'bg-green-50 border-green-300 dark:bg-green-900/20 dark:border-green-600 shadow-green-200/50 dark:shadow-green-800/20 shadow-lg' 
-          : `${categoryStyle.bg} ${categoryStyle.border} hover:shadow-lg`
+          : ''
       }`}
+      style={{
+        ...cssVariables,
+        backgroundColor: isCompleted ? undefined : categoryStyle.bg,
+        borderColor: isCompleted ? undefined : categoryStyle.border
+      }}
       onClick={onShowDetails}
     >
       {/* Completion Stamp */}
@@ -84,12 +119,23 @@ const ChallengeCard = ({ challenge, isCompleted, onComplete, onIncomplete, onSho
           </div>
         </div>
 
+        {/* Skill Level Tag - Above Title */}
+        <div className="flex justify-center mb-2">
+          <div 
+            className="px-2 py-1 rounded text-xs font-medium text-white"
+            style={{ backgroundColor: categoryColor }}
+          >
+            {challenge.skill_level}
+          </div>
+        </div>
+
         {/* Short Name */}
         <div className="flex-1 flex items-center justify-center text-center px-2 min-h-0">
           <h3 className={`text-sm font-semibold leading-tight line-clamp-3 ${
             isCompleted ? 'text-green-700 dark:text-green-300' : 'text-navara-navy dark:text-white'
-          }`} 
+          }`}
           style={{
+            color: isCompleted ? undefined : categoryColor,
             display: '-webkit-box',
             WebkitLineClamp: 3,
             WebkitBoxOrient: 'vertical',
@@ -98,15 +144,6 @@ const ChallengeCard = ({ challenge, isCompleted, onComplete, onIncomplete, onSho
           }}>
             {challenge.short_name || challenge.title}
           </h3>
-        </div>
-
-        {/* Quick Action Icons */}
-        <div className="flex justify-center gap-2 mt-auto pt-2">
-          {challenge.hints && challenge.hints.length > 0 && (
-            <div className="p-1 bg-yellow-100 dark:bg-yellow-900 rounded text-yellow-600 dark:text-yellow-400">
-              <Lightbulb className="h-3 w-3" />
-            </div>
-          )}
         </div>
 
         {/* Action Buttons (show on hover) */}
@@ -156,29 +193,34 @@ const ChallengeCard = ({ challenge, isCompleted, onComplete, onIncomplete, onSho
       {/* Category Color Strip */}
       <div 
         className={`absolute top-0 left-0 right-0 h-1 rounded-t-xl`}
-        style={{ backgroundColor: challenge.category === 'beginner' ? '#10B981' :
-                                   challenge.category === 'intermediate' ? '#F59E0B' :
-                                   challenge.category === 'advanced' ? '#EF4444' : '#8B5CF6' }}
+        style={{ backgroundColor: categoryColor }}
       />
     </motion.div>
   );
 };
 
 // Challenge Detail Modal
-const ChallengeDetailModal = ({ challenge, isOpen, onClose, onComplete, onIncomplete, isCompleted }) => {
+const ChallengeDetailModal = ({ challenge, isOpen, onClose, onComplete, onIncomplete, isCompleted, categories }) => {
   if (!challenge) return null;
+
+  // Find the category object to get the color
+  const categoryObj = categories?.find(cat => cat.id === challenge.category);
+  const categoryColor = categoryObj?.color || '#10B981'; // Default to green if not found
 
   return (
     <Modal
       isOpen={isOpen}
       onClose={onClose}
       title={challenge.title}
-      size="lg"
+      size="full"
     >
       <div className="space-y-6">
         {/* Challenge Info */}
         <div className="flex items-center gap-4">
-          <span className="px-3 py-1 bg-blue-100 dark:bg-blue-900 text-blue-700 dark:text-blue-300 rounded-full text-sm font-medium">
+          <span 
+            className="px-3 py-1 rounded-full text-sm font-medium text-white"
+            style={{ backgroundColor: categoryColor }}
+          >
             {challenge.skill_level}
           </span>
           <span className="flex items-center gap-1 text-gray-600 dark:text-gray-400">
@@ -281,8 +323,10 @@ const TeamView = () => {
   const [selectedChallenge, setSelectedChallenge] = useState(null);
   const [showDetailModal, setShowDetailModal] = useState(false);
   const [filter, setFilter] = useState('all');
+  const [skillLevelFilter, setSkillLevelFilter] = useState('all');
   const [searchQuery, setSearchQuery] = useState('');
   const [copiedTeamCode, setCopiedTeamCode] = useState(false);
+  // Single tab view – removed other tabs
 
   const {
     connected,
@@ -387,24 +431,58 @@ const TeamView = () => {
   }
 
   const currentStatus = leaderboardData?.status || leaderboard.status;
-  const challenges = leaderboard.challenges?.challenges || [];
+  const allChallenges = leaderboard.challenges?.challenges || [];
+  // Filter out disabled challenges from the base set
+  const challenges = allChallenges.filter(challenge => challenge.enabled !== false);
   const categories = leaderboard.challenges?.categories || [];
+  // Removed resources tab: resources variable no longer needed
   const currentTeam = teams.find(t => t.id === user.teamId);
   const teamRank = teams.findIndex(t => t.id === user.teamId) + 1;
 
-  // Filter challenges
+  // Get unique skill levels from enabled challenges only
+  const skillLevels = [...new Set(challenges.map(challenge => challenge.skill_level))].filter(Boolean).sort();
+
+  // Filter and sort challenges
   const filteredChallenges = challenges.filter(challenge => {
     const matchesFilter = filter === 'all' || 
       (filter === 'completed' && completedChallenges.has(challenge.id)) ||
       (filter === 'incomplete' && !completedChallenges.has(challenge.id)) ||
       (filter !== 'all' && filter !== 'completed' && filter !== 'incomplete' && challenge.category === filter);
 
+    const matchesSkillLevel = skillLevelFilter === 'all' || challenge.skill_level === skillLevelFilter;
+
     const matchesSearch = searchQuery === '' || 
       challenge.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
       challenge.description.toLowerCase().includes(searchQuery.toLowerCase());
 
-    return matchesFilter && matchesSearch;
+    return matchesFilter && matchesSkillLevel && matchesSearch;
+  }).sort((a, b) => {
+    // First sort by category (alphabetically by category name)
+    const categoryA = categories.find(cat => cat.id === a.category)?.name || a.category;
+    const categoryB = categories.find(cat => cat.id === b.category)?.name || b.category;
+    
+    if (categoryA !== categoryB) {
+      return categoryA.localeCompare(categoryB);
+    }
+    
+    // Then sort by skill level (Beginner -> Intermediate -> Advanced)
+    const skillLevelOrder = { 
+      'beginner': 1, 
+      'intermediate': 2, 
+      'advanced': 3 
+    };
+    const skillA = skillLevelOrder[a.skill_level?.toLowerCase()] || 999;
+    const skillB = skillLevelOrder[b.skill_level?.toLowerCase()] || 999;
+    
+    if (skillA !== skillB) {
+      return skillA - skillB;
+    }
+    
+    // Finally, sort by title as a tiebreaker
+    return a.title.localeCompare(b.title);
   });
+
+  // Tabs removed – only dashboard content is rendered
 
   return (
     <div className="container mx-auto px-4 py-8 space-y-8">
@@ -416,7 +494,7 @@ const TeamView = () => {
       >
         <div>
           <h1 className="text-3xl font-bold text-navara-navy dark:text-white mb-2">
-            Team Dashboard
+            Team Dashboard{teamProgress?.teamName ? ` - ${teamProgress.teamName}` : ''}
           </h1>
           <div className="flex items-center gap-4 text-sm text-github-dark-gray dark:text-github-light-gray">
             <span className="flex items-center gap-1">
@@ -435,26 +513,18 @@ const TeamView = () => {
         </div>
 
         <div className="flex items-center gap-3">
-          <div className={`flex items-center gap-2 px-3 py-1 rounded-full text-sm ${
-            connected ? 'bg-green-100 text-green-700 dark:bg-green-900 dark:text-green-300' : 
-            'bg-red-100 text-red-700 dark:bg-red-900 dark:text-red-300'
-          }`}>
-            <div className={`w-2 h-2 rounded-full ${connected ? 'bg-green-500' : 'bg-red-500'}`} />
-            {connected ? 'Live' : 'Disconnected'}
-          </div>
-
-          <div className={`px-3 py-1 rounded-full text-sm font-medium ${
-            currentStatus === 'started' ? 'bg-blue-100 text-blue-700 dark:bg-blue-900 dark:text-blue-300' :
-            currentStatus === 'paused' ? 'bg-yellow-100 text-yellow-700 dark:bg-yellow-900 dark:text-yellow-300' :
-            currentStatus === 'ended' ? 'bg-gray-100 text-gray-700 dark:bg-gray-900 dark:text-gray-300' :
-            'bg-purple-100 text-purple-700 dark:bg-purple-900 dark:text-purple-300'
-          }`}>
-            {currentStatus === 'active' ? 'Ready' : 
-             currentStatus === 'started' ? 'In Progress' :
-             currentStatus === 'paused' ? 'Paused' : 'Ended'}
-          </div>
+          {/* Status indicators removed */}
         </div>
       </motion.div>
+
+      {/* Dashboard Content (only tab) */}
+      <motion.div
+        key="dashboard"
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        exit={{ opacity: 0, y: -20 }}
+        transition={{ duration: 0.2 }}
+      >
 
       <div className="grid lg:grid-cols-4 gap-8">
         {/* Main Content */}
@@ -582,18 +652,32 @@ const TeamView = () => {
                       />
                     </div>
                     
-                    {/* Filter */}
+                    {/* Category Filter */}
                     <select
                       value={filter}
                       onChange={(e) => setFilter(e.target.value)}
                       className="input md:w-48"
                     >
-                      <option value="all">All Challenges</option>
+                      <option value="all">All Categories</option>
                       <option value="completed">Completed</option>
                       <option value="incomplete">Incomplete</option>
                       {categories.map(category => (
                         <option key={category.id} value={category.id}>
                           {category.name}
+                        </option>
+                      ))}
+                    </select>
+
+                    {/* Skill Level Filter */}
+                    <select
+                      value={skillLevelFilter}
+                      onChange={(e) => setSkillLevelFilter(e.target.value)}
+                      className="input md:w-40"
+                    >
+                      <option value="all">All Levels</option>
+                      {skillLevels.map(skillLevel => (
+                        <option key={skillLevel} value={skillLevel}>
+                          {skillLevel}
                         </option>
                       ))}
                     </select>
@@ -647,7 +731,7 @@ const TeamView = () => {
                 ) : (
                   <div className="space-y-4">
                     {/* Challenge Grid */}
-                    <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4">
+                    <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-5 gap-4">
                       <AnimatePresence mode="popLayout">
                         {filteredChallenges.map((challenge, index) => (
                           <motion.div
@@ -658,6 +742,7 @@ const TeamView = () => {
                           >
                             <ChallengeCard
                               challenge={challenge}
+                              categories={categories}
                               isCompleted={completedChallenges.has(challenge.id)}
                               onComplete={() => handleCompleteChallenge(challenge.id)}
                               onIncomplete={() => handleIncompleteChallenge(challenge.id)}
@@ -820,7 +905,7 @@ const TeamView = () => {
                     {recentCompletions.slice(0, 3).map((completion, index) => (
                       <div key={index} className="text-sm">
                         <div className="font-medium text-navara-navy dark:text-white">
-                          {completion.teamName}
+                          {completion.challengeTitle}
                         </div>
                         <div className="text-github-dark-gray dark:text-github-light-gray">
                           +{completion.points} points
@@ -837,10 +922,12 @@ const TeamView = () => {
           )}
         </div>
       </div>
+  </motion.div>
 
       {/* Challenge Detail Modal */}
       <ChallengeDetailModal
         challenge={selectedChallenge}
+        categories={categories}
         isOpen={showDetailModal}
         onClose={() => setShowDetailModal(false)}
         onComplete={() => handleCompleteChallenge(selectedChallenge?.id)}

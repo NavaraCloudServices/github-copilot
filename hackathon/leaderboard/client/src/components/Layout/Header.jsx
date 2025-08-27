@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Link, useLocation } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { Trophy, Menu, X, Sun, Moon, LogOut, User } from 'lucide-react';
 import { useAuth } from '../../contexts/AuthContext';
@@ -11,10 +11,13 @@ const Header = () => {
   const { user, logout, isAuthenticated, isTeam, isHost } = useAuth();
   const { theme, toggleTheme } = useTheme();
   const location = useLocation();
+  const navigate = useNavigate();
 
   const handleLogout = async () => {
     await logout();
     setIsMenuOpen(false);
+    // Navigate to root/landing page after logout
+    navigate('/');
   };
 
   const isActive = (path) => location.pathname === path;
@@ -74,6 +77,18 @@ const Header = () => {
                     }`}
                   >
                     Public Board
+                  </Link>
+                )}
+                {user.leaderboardId && (
+                  <Link
+                    to={`/resources/${user.leaderboardId}`}
+                    className={`text-sm font-medium transition-colors ${
+                      isActive(`/resources/${user.leaderboardId}`)
+                        ? 'text-navara-blue'
+                        : 'text-white hover:text-navara-blue'
+                    }`}
+                  >
+                    Learning Resources
                   </Link>
                 )}
               </>
@@ -172,6 +187,15 @@ const Header = () => {
                       onClick={() => setIsMenuOpen(false)}
                     >
                       Public Board
+                    </Link>
+                  )}
+                  {user.leaderboardId && (
+                    <Link
+                      to={`/resources/${user.leaderboardId}`}
+                      className="text-white hover:text-navara-blue font-medium"
+                      onClick={() => setIsMenuOpen(false)}
+                    >
+                      Learning Resources
                     </Link>
                   )}
                 </>

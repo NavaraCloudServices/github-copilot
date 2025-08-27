@@ -207,31 +207,49 @@ const ActivityTicker = ({ recentCompletions }) => {
       </div>
       <div className="space-y-2">
         <AnimatePresence mode="popLayout">
-          {recentCompletions.slice(0, 5).map((completion, index) => (
-            <motion.div
-              key={`${completion.teamName}-${completion.challengeId}-${completion.timestamp}`}
-              initial={{ opacity: 0, x: -20 }}
-              animate={{ opacity: 1, x: 0 }}
-              exit={{ opacity: 0, x: 20 }}
-              transition={{ delay: index * 0.1 }}
-              className="flex items-center justify-between p-2 bg-white dark:bg-github-dark-gray rounded-lg text-sm"
-            >
-              <div>
-                <span className="font-medium text-navara-navy dark:text-white">
-                  {completion.teamName}
-                </span>
-                <span className="text-github-dark-gray dark:text-github-light-gray ml-1">
-                  completed a challenge
-                </span>
-              </div>
-              <div className="flex items-center gap-2">
-                <span className="font-bold text-green-600 dark:text-green-400">
-                  +{completion.points}
-                </span>
-                <Zap className="h-4 w-4 text-yellow-500" />
-              </div>
-            </motion.div>
-          ))}
+          {[...recentCompletions]
+            .sort((a, b) => {
+              const ta = a.timestamp || a.completed_at || a.time || a.date;
+              const tb = b.timestamp || b.completed_at || b.time || b.date;
+              const da = new Date(ta);
+              const db = new Date(tb);
+              return db - da;
+            })
+            .slice(0, 5)
+            .map((completion, index) => {
+              const challengeLabel = completion.challengeTitle || completion.challengeName || completion.challengeId;
+              let dateTimeText = '';
+              const rawTs = completion.timestamp || completion.completed_at || completion.time || completion.date;
+              if (rawTs) {
+                const d = new Date(rawTs);
+                if (!isNaN(d.getTime())) {
+                  dateTimeText = d.toLocaleString();
+                }
+              }
+              return (
+                <motion.div
+                  key={`${completion.teamName}-${completion.challengeId}-${completion.timestamp}`}
+                  initial={{ opacity: 0, x: -20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  exit={{ opacity: 0, x: 20 }}
+                  transition={{ delay: index * 0.1 }}
+                  className="p-2 bg-white dark:bg-github-dark-gray rounded-lg text-xs sm:text-sm flex flex-col sm:flex-row sm:items-center sm:justify-between gap-1"
+                >
+                  <div className="flex-1 min-w-0">
+                    <span className="font-medium text-navara-navy dark:text-white">{completion.teamName}</span>
+                    <span className="mx-1 text-github-dark-gray dark:text-github-light-gray">•</span>
+                    <span className="font-medium text-blue-600 dark:text-blue-400 break-all">{challengeLabel}</span>
+                  </div>
+                  <div className="flex items-center gap-2 flex-shrink-0 text-github-dark-gray dark:text-github-light-gray">
+                    {dateTimeText && (
+                      <span className="whitespace-nowrap text-gray-500 dark:text-gray-500">{dateTimeText}</span>
+                    )}
+                    <span className="font-bold text-green-600 dark:text-green-400 whitespace-nowrap">+{completion.points}</span>
+                    <Zap className="h-4 w-4 text-yellow-500" />
+                  </div>
+                </motion.div>
+              );
+            })}
         </AnimatePresence>
       </div>
     </div>
@@ -304,7 +322,10 @@ const PublicLeaderboard = () => {
   }
 
   const currentStatus = leaderboardData?.status || leaderboard.status;
-  const totalChallenges = leaderboard.challenges?.challenges?.length || 0;
+  const allChallenges = leaderboard.challenges?.challenges || [];
+  // Only count enabled challenges for statistics
+  const enabledChallenges = allChallenges.filter(challenge => challenge.enabled !== false);
+  const totalChallenges = enabledChallenges.length;
   const totalPoints = leaderboard.challenges?.metadata?.total_points || 0;
 
   return (
@@ -334,41 +355,11 @@ const PublicLeaderboard = () => {
                   <Trophy className="h-4 w-4" />
                   {totalPoints} total points
                 </span>
-                {leaderboard.challenges?.metadata?.duration_hours && (
-                  <span className="flex items-center gap-1">
-                    <Clock className="h-4 w-4" />
-                    {leaderboard.challenges.metadata.duration_hours}h duration
-                  </span>
-                )}
               </div>
             </div>
 
             <div className="flex items-center gap-4">
-              {/* Live indicator */}
-              <motion.div
-                animate={{ scale: [1, 1.05, 1] }}
-                transition={{ duration: 2, repeat: Infinity }}
-                className={`flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium ${
-                  connected 
-                    ? 'bg-green-100 text-green-700 dark:bg-green-900 dark:text-green-300' 
-                    : 'bg-red-100 text-red-700 dark:bg-red-900 dark:text-red-300'
-                }`}
-              >
-                <div className={`w-2 h-2 rounded-full ${connected ? 'bg-green-500' : 'bg-red-500'}`} />
-                {connected ? 'LIVE' : 'DISCONNECTED'}
-              </motion.div>
-
-              {/* Status badge */}
-              <div className={`px-4 py-2 rounded-full text-sm font-medium ${
-                currentStatus === 'started' ? 'bg-blue-100 text-blue-700 dark:bg-blue-900 dark:text-blue-300' :
-                currentStatus === 'paused' ? 'bg-yellow-100 text-yellow-700 dark:bg-yellow-900 dark:text-yellow-300' :
-                currentStatus === 'ended' ? 'bg-gray-100 text-gray-700 dark:bg-gray-900 dark:text-gray-300' :
-                'bg-purple-100 text-purple-700 dark:bg-purple-900 dark:text-purple-300'
-              }`}>
-                {currentStatus === 'active' ? 'READY TO START' : 
-                 currentStatus === 'started' ? 'IN PROGRESS' :
-                 currentStatus === 'paused' ? 'PAUSED' : 'ENDED'}
-              </div>
+              {/* Status indicators removed */}
             </div>
           </div>
         </div>
@@ -420,18 +411,31 @@ const PublicLeaderboard = () => {
               <ActivityTicker recentCompletions={recentCompletions} />
             </motion.div>
 
-            {/* Competition Info */}
+            {/* Join This Competition (moved above competition info) */}
             <motion.div
               initial={{ opacity: 0, x: 20 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ delay: 0.4 }}
+            >
+              <QRCodeJoin
+                leaderboardId={leaderboardId}
+                accessCode={leaderboard.accessCode}
+                leaderboardName={leaderboard.name}
+              />
+            </motion.div>
+
+            {/* Competition Info */}
+            <motion.div
+              initial={{ opacity: 0, x: 20 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ delay: 0.5 }}
               className="bg-white dark:bg-github-dark-gray rounded-xl p-6 border border-github-light-gray dark:border-gray-700"
             >
               <h3 className="font-semibold text-navara-navy dark:text-white mb-4 flex items-center gap-2">
                 <Trophy className="h-5 w-5" />
                 Competition Info
               </h3>
-              
+
               {leaderboard.challenges?.metadata?.description && (
                 <p className="text-sm text-github-dark-gray dark:text-github-light-gray mb-4">
                   {leaderboard.challenges.metadata.description}
@@ -441,7 +445,7 @@ const PublicLeaderboard = () => {
               <div className="space-y-3">
                 {leaderboard.challenges?.categories?.map((category) => (
                   <div key={category.id} className="flex items-center gap-3">
-                    <div 
+                    <div
                       className="w-4 h-4 rounded-full"
                       style={{ backgroundColor: category.color }}
                     />
@@ -462,19 +466,6 @@ const PublicLeaderboard = () => {
                   </ul>
                 </div>
               )}
-            </motion.div>
-
-            {/* QR Code for joining */}
-            <motion.div
-              initial={{ opacity: 0, x: 20 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ delay: 0.5 }}
-            >
-              <QRCodeJoin
-                leaderboardId={leaderboardId}
-                accessCode={leaderboard.accessCode}
-                leaderboardName={leaderboard.name}
-              />
             </motion.div>
           </div>
         </div>

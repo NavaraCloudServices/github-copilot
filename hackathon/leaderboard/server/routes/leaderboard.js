@@ -76,13 +76,30 @@ router.get('/:id', async (req, res, next) => {
     const challenges = JSON.parse(leaderboard.challenges_json);
     const recentCompletions = await req.db.statements.getCompletionsByLeaderboard.all(id);
 
+    // Filter out disabled challenges for counting purposes
+    const enabledChallenges = challenges.challenges?.filter(challenge => challenge.enabled !== false) || [];
+    const enabledChallengeIds = new Set(enabledChallenges.map(c => c.id));
+
+    // Recalculate completed_challenges for each team considering only enabled challenges
+    const teamsWithCorrectedCounts = await Promise.all(teams.map(async (team) => {
+      const teamCompletions = await req.db.statements.getTeamCompletions.all(team.id);
+      const enabledCompletions = teamCompletions.filter(completion => 
+        enabledChallengeIds.has(completion.challenge_id)
+      );
+      
+      return {
+        ...team,
+        completed_challenges: enabledCompletions.length
+      };
+    }));
+
     res.json({
       id: leaderboard.id,
       name: leaderboard.name,
       status: leaderboard.status,
       accessCode: leaderboard.access_code,
       challenges,
-      teams,
+      teams: teamsWithCorrectedCounts,
       recentCompletions: recentCompletions.slice(0, 10),
       createdAt: leaderboard.created_at,
       startedAt: leaderboard.started_at,
