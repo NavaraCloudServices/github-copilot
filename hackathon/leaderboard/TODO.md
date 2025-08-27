@@ -1,5 +1,10 @@
 # TODO list for Leaderboard
 
+## Functional
+
+[ ] Recent activity in team dashboard shows all activities accros all teams. Needs to be filtered
+[ ] We need a countdown clock (based on end-time)
+
 ## Technical
 
 - [ ] Update dependencies root
