@@ -7,6 +7,7 @@
 
 ## Technical
 
+- [ ] Fix CSRF security issue
 - [ ] Update dependencies root
 - [ ] Update dependencies in client
 - [ ] Update dependabot configuration for Leaderboard
