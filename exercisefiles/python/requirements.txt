@@ -2,7 +2,7 @@ blinker==1.9.0
 certifi==2025.8.3
 charset-normalizer==3.4.3
 click==8.1.8
-Flask==3.1.1
+Flask==3.1.2
 idna==3.10
 iniconfig==2.1.0
 itsdangerous==2.2.0
@@ -11,7 +11,7 @@ MarkupSafe==3.0.2
 packaging==25.0
 pluggy==1.6.0
 pytest==8.4.1
-requests==2.32.4
+requests==2.32.5
 urllib3==2.5.0
 Werkzeug==3.1.3
 
