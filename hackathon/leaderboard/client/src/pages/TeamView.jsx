@@ -105,11 +105,6 @@ const ChallengeCard = ({ challenge, isCompleted, onComplete, onIncomplete, onSho
         </div>
       )}
 
-      {/* Challenge Number - Top Left Corner */}
-      <div className="absolute top-2 left-2 text-sm font-medium text-gray-400 dark:text-gray-500">
-        {challenge.number || challenge.id.split('_')[1] || '?'}
-      </div>
-
       <div className="p-4 h-full flex flex-col">
         {/* Header - Points only */}
         <div className="flex justify-end mb-3">
@@ -129,9 +124,9 @@ const ChallengeCard = ({ challenge, isCompleted, onComplete, onIncomplete, onSho
           </div>
         </div>
 
-        {/* Short Name */}
+        {/* Title */}
         <div className="flex-1 flex items-center justify-center text-center px-2 min-h-0">
-          <h3 className={`text-sm font-semibold leading-tight line-clamp-3 ${
+          <h3 className={`text-sm font-bold leading-none line-clamp-3 ${
             isCompleted ? 'text-green-700 dark:text-green-300' : 'text-navara-navy dark:text-white'
           }`}
           style={{
@@ -142,8 +137,15 @@ const ChallengeCard = ({ challenge, isCompleted, onComplete, onIncomplete, onSho
             overflow: 'hidden',
             textOverflow: 'ellipsis'
           }}>
-            {challenge.short_name || challenge.title}
+            {challenge.title || challenge.short_name}
           </h3>
+        </div>
+
+        {/* Category - Bottom Right Corner */}
+        <div className="absolute bottom-2 right-2">
+          <span className="text-xs italic text-gray-500 dark:text-gray-400">
+            {categoryObj?.name || 'General'}
+          </span>
         </div>
 
         {/* Action Buttons (show on hover) */}
@@ -731,7 +733,7 @@ const TeamView = () => {
                 ) : (
                   <div className="space-y-4">
                     {/* Challenge Grid */}
-                    <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-5 gap-4">
+                    <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-4 gap-4">
                       <AnimatePresence mode="popLayout">
                         {filteredChallenges.map((challenge, index) => (
                           <motion.div
