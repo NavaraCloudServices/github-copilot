@@ -519,6 +519,8 @@ const TeamView = () => {
         </div>
       </motion.div>
 
+          {/* Footer Copilot Challenges Link */}
+
       {/* Dashboard Content (only tab) */}
       <motion.div
         key="dashboard"
@@ -764,6 +766,18 @@ const TeamView = () => {
                         <p className="text-sm text-gray-600 dark:text-gray-400">
                           💡 <strong>Tip:</strong> Click on any challenge card to see full details, hints, and completion criteria!
                         </p>
+                          <div className="mt-4 text-sm text-gray-500 dark:text-gray-400">
+                            If you did not bring any code, please visit
+                            <a
+                              href="https://github.com/NavaraCloudServices/github-copilot/tree/main/challenges"
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="text-navara-blue underline ml-1"
+                            >
+                              https://github.com/NavaraCloudServices/github-copilot/tree/main/challenges 
+                            </a>
+                             for general GitHub Copilot challenges
+                          </div>
                       </div>
                     )}
                   </div>
