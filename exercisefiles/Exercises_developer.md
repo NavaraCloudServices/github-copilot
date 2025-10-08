@@ -105,8 +105,6 @@ Implement the following methods:
   - Get the list of files in the current directory
   - Return the list of files
 
-  >GitHub Copilot can also help with these kind of commands locally. The feature is called GitHub Copilot in the CLI. You can learn more information about this feature [here](https://docs.github.com/en/copilot/github-copilot-in-the-cli/about-github-copilot-in-the-cli).
-
 ### Exercise 4: Refactoring and optimizing
 
 > In this exercise we will use GitHub Copilot to refactor existing code. 
@@ -144,5 +142,3 @@ In the chat, ask GitHub Copilot to document your code. Tip: use the `#file` opti
 ### Exercise 6: Building tests
 
 Use GitHub Copilot for your testing. We will create automated tests to check that the functionality of the previous endpoints is correctly implemented. Create both unit tests and integration tests.
-
-> If you are using Visual Studio Code, you can try out GitHub Copilot Chat Agent to iterate over the code and test outcomes.
