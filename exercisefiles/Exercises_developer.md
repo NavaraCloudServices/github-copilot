@@ -9,7 +9,7 @@ Try different things and see what GitHub Copilot can do for you, like generating
 
 ## Exercises
 
-### Exercise 1: Introduction
+### Exercise 1: Setup and Code Completions
 
 > The goal of this exercise is to get acquainted with the project files, use basic GitHub Copilot Suggestions/Completion and run the HTTP server and its tests. After this we will start exploring GitHub Copilot features. 
 
@@ -22,9 +22,7 @@ Do the following activities:
 - In your main file you can find some code comments. Use GitHub Copilot Suggestions/Completion to implement the basic feature
 - Make the test pass
 
-### Exercise 2: Inline suggestions
-
->The goal of this exercise is using GitHub Copilot Inline suggestions feature to extend the HTTP server endpoints. 
+>The goal of the following exercises is using GitHub Copilot Inline suggestions feature to extend the HTTP server endpoints. 
 
 You can describe something you want to do using natural language within a comment, and GitHub Copilot will suggest the code to accomplish your goal. Use your fresh prompting skill to first type in your requirement as a code comment.
 
@@ -51,6 +49,41 @@ Implement the following methods:
 
   >Use above information inside the GitHub Copilot inline feature in your server code file. Press enter and wait for GitHub Copilot to suggest you the code.
 
+### Exercise 2: GitHub Copilot Chat Ask mode
+
+> The goal of this exercise is to learn how to use GitHub Copilot Chat in "ask mode" to get explanations, understand code, and receive guidance before implementing features.
+
+GitHub Copilot Chat isn't just for generating code - it's also a powerful tool for learning and understanding. In this exercise, you'll practice asking questions to better understand your code and plan your implementation strategy.
+
+Open GitHub Copilot Chat (`Control+Command+i` on Mac / `Ctrl+Alt+i` on Windows/Linux) and practice the following:
+
+#### Ask about the existing code:
+
+1. **Understand what you've built**: Select the code from Exercise 2 and ask:
+   - "Explain what #selection code does"
+   - "What are potential edge cases I should handle?"
+   - "Are there any security concerns with this implementation?"
+
+2. **Learn about best practices**: Ask questions like:
+   - "What's the best way to validate phone numbers in Dutch?"
+   - "How should I handle error responses in HTTP servers?"
+   - "What libraries can help with date/time calculations?"
+
+#### Plan your next implementation:
+
+Before implementing the **/ValidateDutchBSN** endpoint (part of Exercise 3), Ask GitHub Copilot Chat:
+- "How can I validate a Dutch BSN number?"
+- "What are the steps involved in the '11 proef' validation?"
+- "Can you provide examples of valid and invalid BSN numbers?"
+
+### Exercise 3: GitHub Copilot Chat Agent mode
+
+>The goal of this exercise is to get familiar with the GitHub Copilot Chat feature and extend the server with additional features.
+
+You can ask GitHub Copilot Chat to give code suggestions, explain code, generate unit tests, and suggest code fixes. To open the chat view, click the chat icon in the activity bar or press `Control+Command+i` (Mac) / `Ctrl+Alt+i` (Windows/Linux).
+
+Implement the following methods:
+
 #### **/ValidateDutchBSN**:
 
   - Receive by querystring a parameter called *bsn*
@@ -63,16 +96,6 @@ Implement the following methods:
     - 051464548 - valid
     - 051424548 - invalid
     - 262868303 - invalid
-
-  >Use above information inside a comment in your server code file. In this case, you may want to see multiple solutions from GitHub Copilot to pick the one that best fits the way to calculate the letter. In order to see the firs 10 suggestions from GitHub Copilot press `ctrl + enter`.
-
-### Exercise 3: GitHub Copilot Chat and prompting
-
->The goal of this exercise is to get familiar with the GitHub Copilot Chat feature and extend the server with additional features.
-
-You can ask GitHub Copilot Chat to give code suggestions, explain code, generate unit tests, and suggest code fixes. To open the chat view, click the chat icon in the activity bar or press `Control+Command+i` (Mac) / `Ctrl+Alt+i` (Windows/Linux).
-
-Implement the following methods:
 
 #### **/ReturnColorHexCode**:
 
@@ -131,7 +154,7 @@ Implement the following methods:
 
 As you might have noticed, the code is getting a bit messy. We can use GitHub Copilot to create controllers for our endpoints. This will help us to separate the logic of the endpoints from the logic of the application and make it more readable, maintainable and testable.
 
-  > Use GitHub Copilot Edits to create controllers for the endpoints. Use your prompting skills to enhance the implementation and ensure best practices are followed.
+  > Use GitHub Copilot Agent mode to create controllers for the endpoints. Use your prompting skills to enhance the implementation and ensure best practices are followed.
 
 ### Exercise 5: Document the code
 
@@ -142,3 +165,59 @@ In the chat, ask GitHub Copilot to document your code. Tip: use the `#file` opti
 ### Exercise 6: Building tests
 
 Use GitHub Copilot for your testing. We will create automated tests to check that the functionality of the previous endpoints is correctly implemented. Create both unit tests and integration tests.
+
+### Exercise 7: Custom Instructions
+
+> The goal of this exercise is to learn how to create and use custom instructions to guide GitHub Copilot's behavior according to your team's standards and preferences.
+
+Custom instructions allow you to define project-specific guidelines, coding standards, and preferences that GitHub Copilot will follow when generating code. This is especially useful for maintaining consistency across a team or project.
+
+#### Part 1: Create Custom Instructions
+
+Create a custom instructions file for your project. You can create a `.github/copilot-instructions.md` file in your repository or workspace.
+
+Your custom instructions should include:
+
+1. **Coding Standards**: Define your preferred coding style
+   - Naming conventions (camelCase, snake_case, PascalCase)
+   - Comment style and documentation requirements
+   - Error handling patterns
+   - Logging preferences
+
+2. **Framework/Language Specific Guidelines**: 
+   - Preferred libraries or packages to use
+   - Patterns to follow (e.g., async/await vs callbacks)
+   - Security best practices for your language
+
+3. **Project-Specific Rules**:
+   - Response format standards (e.g., all API responses should follow a specific JSON structure)
+   - Authentication/authorization approach
+   - Database interaction patterns
+   - API versioning strategy
+
+4. **Architectural Rules**:
+   - Layered architecture guidelines (e.g., separation of concerns)
+   - Dependency injection practices
+   - Working with controlers, etc.
+
+#### Part 2: Test Your Custom Instructions
+
+Now extend your HTTP server with new endpoints that will test if GitHub Copilot follows your custom instructions:
+
+1. **Create a `/WeatherForecast` endpoint**:
+   - Receive a `city` parameter via querystring
+   - Return mock weather data for the city
+   - Ensure the response follows your custom API response format
+   - Add proper error handling as specified in your instructions
+   - Include appropriate logging
+
+2. **Create a `/CalculateInterest` endpoint**:
+   - Receive `principal`, `rate`, and `years` via querystring
+   - Calculate compound interest
+   - Follow your error handling patterns
+   - Use your preferred async patterns
+   - Return response in your standardized format
+
+> When implementing these endpoints, pay attention to how GitHub Copilot's suggestions align with your custom instructions. If suggestions don't follow your rules, refine your instructions to be more specific.
+
+
