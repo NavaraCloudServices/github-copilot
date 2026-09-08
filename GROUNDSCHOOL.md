@@ -59,5 +59,8 @@ There are three ways to execute the exercises:
 - [Infrastructure as Code](./challenges/devops_application/README.md)
 - [Deploy Kubernetes Application](./challenges/devops_kubernetesapp/README.md)
 
+### Testing
+- [Webshop testing with Cypress or Playwright](./challenges/testing/README.md)
+
 If you don't have your local development environment ready (installing SDKs), you can use [GitHub Codespaces](./CODESPACES.md#available-codespaces) for this as well.
 

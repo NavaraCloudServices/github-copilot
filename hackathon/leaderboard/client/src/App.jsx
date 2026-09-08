@@ -10,6 +10,7 @@ import HostView from './pages/HostView'
 import PublicLeaderboard from './pages/PublicLeaderboard'
 import JoinPage from './pages/JoinPage'
 import NotFound from './pages/NotFound'
+import ResourcesPage from './pages/ResourcesPage'
 
 function App() {
   return (
@@ -23,6 +24,7 @@ function App() {
               <Route path="/team/:leaderboardId?" element={<TeamView />} />
               <Route path="/host/:leaderboardId?" element={<HostView />} />
               <Route path="/leaderboard/:leaderboardId" element={<PublicLeaderboard />} />
+              <Route path="/resources/:leaderboardId" element={<ResourcesPage />} />
               <Route path="*" element={<NotFound />} />
             </Routes>
           </Layout>

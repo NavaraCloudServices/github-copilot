@@ -60,10 +60,7 @@ class LeaderboardServer {
     }
 
     // Security middleware
-    this.app.use(helmet({
-      contentSecurityPolicy: false,
-      crossOriginEmbedderPolicy: false
-    }));
+    this.app.use(helmet());
 
     // Rate limiting with appropriate trust proxy configuration
     const limiter = rateLimit({
@@ -95,6 +92,7 @@ class LeaderboardServer {
       secret: process.env.SESSION_SECRET || 'your-secret-key-change-in-production',
       resave: false,
       saveUninitialized: false,
+      rolling: true, // Renew session on each request to extend expiration
       cookie: {
         secure: process.env.NODE_ENV === 'production', // Only secure in production
         httpOnly: true,

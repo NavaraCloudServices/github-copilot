@@ -134,7 +134,7 @@ const Landing = () => {
       toast.success('Challenges uploaded successfully!');
     } catch (error) {
       setCreateForm(prev => ({ ...prev, uploading: false }));
-      toast.error(error.response?.data?.error || 'Failed to upload file');
+      toast.error(error.response?.data?.error || 'Failed to upload file: ' + error.message);
     }
   };
 

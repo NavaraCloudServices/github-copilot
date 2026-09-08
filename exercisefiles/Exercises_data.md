@@ -9,9 +9,8 @@ The goal of these exercises is to use GitHub Copilot to help load, clean, analyz
 **Main Script:** `phil_analysis.py`
 **Test Script:** `test_phil_analysis.py`
 
----
 
-### Exercise 1: Setup and First Completions
+### Exercise 1: Setup and Code Completions
 
 > The goal is to load the dataset using Pandas and perform initial inspections, letting GitHub Copilot assist with basic code completion.
 
@@ -28,9 +27,6 @@ The goal of these exercises is to use GitHub Copilot to help load, clean, analyz
 4.  Make sure that the Temperature columns are numeric types.
 5.  Run the script (`python phil_analysis.py`) to ensure it loads the data correctly and prints the information.
 
----
-
-### Exercise 2: Data Cleaning and Transformation with Completions
 
 > The goal is to clean the data, handle missing values, and create a standardized prediction column using GitHub Copilot's inline suggestions.
 
@@ -58,9 +54,55 @@ The goal of these exercises is to use GitHub Copilot to help load, clean, analyz
     _(Self-Correction: Review GitHub Copilot's suggestion. Did you get three separate columns? Is the calculation correct?)_
 6.  Inspect the results. Print a few values, analyze the value counts of the simplified prediction column, and check the DataFrame info again.
 
----
+### Exercise 2: GitHub Copilot Chat Ask mode
 
-### Exercise 3: Defining Accuracy with GitHub Copilot Chat
+> The goal of this exercise is to learn how to use GitHub Copilot Chat in "ask mode" to understand your data transformations, explore alternative approaches, and validate your cleaning logic before implementing more complex features.
+
+GitHub Copilot Chat can help you understand your data analysis choices and explore different data cleaning strategies. In this exercise, you'll practice asking questions to gain insights into your code and plan your next steps.
+
+Open GitHub Copilot Chat (`Control+Command+i` on Mac / `Ctrl+Alt+i` on Windows/Linux) and practice the following:
+
+#### Ask about the existing code:
+
+1. **Understand your data cleaning**: Select the code from Exercise 1 where you created the 'Simplified Prediction' column and ask:
+   - "Explain what this #selection does and why this mapping makes sense"
+   - "What are potential issues with this categorization approach?"
+   - "Are there any edge cases I haven't considered?"
+
+2. **Explore data quality**: Ask questions like:
+   - "What are best practices for handling missing temperature data in time series analysis?"
+   - "Should I use mean, median, or forward fill for missing temperature values? What are the tradeoffs?"
+   - "How can I detect outliers in temperature data?"
+
+3. **Understand your transformations**: Select your Fahrenheit to Celsius conversion code and ask:
+   - "Is this conversion formula correct for all temperature scales?"
+   - "What happens if there are NaN values in the temperature columns?"
+   - "Are there any precision issues I should be aware of?"
+
+#### Validate your approach:
+
+Before moving to Exercise 3's accuracy calculation, ask GitHub Copilot Chat:
+- "What are different ways to measure if a weather prediction was accurate?"
+- "How should I define 'significantly colder' when comparing monthly temperatures?"
+- "What statistical methods could I use to determine if March was warmer than February?"
+- "Show me examples of how to compare temperature differences in pandas"
+
+#### Explore your dataset:
+
+Ask exploratory questions about your data:
+- "What patterns should I look for in the temperature difference columns I created?"
+- "How can I visualize the relationship between Phil's predictions and actual temperature changes?"
+- "What does the distribution of prediction types tell me about the dataset?"
+
+> 💡 **Tip**: Use the ask mode to understand the implications of your data cleaning decisions. This helps you make informed choices about handling missing data, outliers, and transformations before implementing accuracy metrics.
+
+**Checkpoint**: Before moving to Exercise 3, ensure you understand:
+- Why you chose your missing data strategy
+- How your simplified predictions map to the original values
+- What the temperature differences represent
+- How you'll define "accuracy" in the next exercise
+
+### Exercise 3: GitHub Copilot Chat Agent mode
 
 > The goal is to use GitHub Copilot Chat to define a function that determines if Phil's prediction was "correct" based on subsequent temperatures, potentially incorporating external data.
 
@@ -96,8 +138,6 @@ The goal of these exercises is to use GitHub Copilot to help load, clean, analyz
     - A histogram of the temperature differences for each prediction type.
     - Try something yourself!
 
----
-
 ### Exercise 4: Refactoring, Optimization, and Synthetic Data
 
 > The goal is to use GitHub Copilot to refactor the accuracy calculation for potential performance improvement and readability. We also take a step into generating synthetic data.
@@ -123,8 +163,6 @@ The goal of these exercises is to use GitHub Copilot to help load, clean, analyz
       Ensure appropriate imports for pandas and numpy.
       ```
 
----
-
 ### Exercise 5: Documenting the Analysis
 
 > The goal is to use GitHub Copilot to generate docstrings for functions and create a README file explaining the script.
@@ -147,8 +185,6 @@ The goal of these exercises is to use GitHub Copilot to help load, clean, analyz
       - Key Steps: Briefly outline the main steps performed (loading, cleaning, simplifying predictions, checking accuracy).
       ```
 
----
-
 ### Exercise 6: Testing the Logic
 
 > The goal is to use GitHub Copilot to generate unit tests for the data cleaning and accuracy logic using `pytest`.
@@ -168,10 +204,65 @@ The goal of these exercises is to use GitHub Copilot to help load, clean, analyz
     - Run `pytest`.
     - **Pitfall / Debugging:** If any tests fail, examine the error messages. Use GitHub Copilot Chat to help understand _why_ a test might be failing. Use the context of the failing test and the relevant function/logic from `phil_analysis.py` in Chat and ask: "This pytest test is failing. Can you help me debug the function/logic based on this test failure?" This forces interaction beyond simple generation. Did the original logic handle an edge case correctly? Did the test make a wrong assumption?
 
----
+### Exercise 7: Custom Instructions
 
-**Next Steps (Beyond Exercises):**
+> The goal of this exercise is to create and use custom instructions to guide GitHub Copilot's behavior according to your data team's standards, analysis patterns, and data quality requirements.
 
-- Explore more sophisticated accuracy metrics.
-- Refine the handling of missing data using different imputation techniques suggested by GitHub Copilot.
-- `Show me Python code using requests and pandas to fetch data from 'https://groundhog-day.com/api/v1/groundhogs' and display the names and predictions count for each groundhog.`
+Custom instructions help ensure that GitHub Copilot generates data analysis code that follows your organization's best practices, coding standards, and data governance policies.
+
+#### Part 1: Create Data Engineering Custom Instructions
+
+Create a custom instructions file for your data project. You can create a `.github/copilot-instructions.md` file in your repository.
+
+Your custom instructions should include:
+
+1. **Data Analysis Standards**: Define your team's preferred patterns
+   - Pandas vs Polars vs PySpark preferences
+   - Column naming conventions (snake_case, lowercase, etc.)
+   - DataFrame operation patterns (method chaining, intermediate variables)
+   - Missing data handling strategy
+
+2. **Code Quality Requirements**:
+   - Type hints for function parameters and returns
+   - Docstring format (NumPy, Google, or reStructuredText style)
+   - Error handling patterns
+   - Logging requirements
+
+3. **Data Quality and Validation**:
+   - Required data validation steps
+   - Acceptable missing data thresholds
+   - Outlier detection approaches
+   - Data type enforcement
+
+4. **Testing and Documentation**:
+   - Test coverage requirements
+   - Test data generation patterns
+   - Documentation structure
+   - Assertion patterns for data validation
+
+#### Part 2: Test Your Custom Instructions with Data Analysis
+
+Now create data analysis functions that will test if GitHub Copilot follows your custom data instructions:
+
+1. **Create a Data Validation Function**:
+   - Write `validate_weather_data(df: pd.DataFrame) -> Dict[str, Any]` 
+   - Check for required columns
+   - Validate temperature ranges (e.g., -50 to 50 Celsius)
+   - Check for missing data percentages
+   - Return a validation report dictionary
+   - Follow your docstring and type hint standards
+
+2. **Create a Data Cleaning Pipeline Function**:
+   - Write `clean_temperature_data(df: pd.DataFrame) -> pd.DataFrame`
+   - Standardize column names to snake_case
+   - Handle missing temperature values per your strategy
+   - Detect and flag outliers
+   - Add logging for each transformation step
+   - Follow your missing data handling standards
+
+3. **Create an Analysis Summary Function**:
+   - Write `generate_prediction_summary(df: pd.DataFrame) -> pd.DataFrame`
+   - Calculate accuracy by year, decade, or region
+   - Use proper aggregation methods
+   - Return results with clear column names
+   - Include data validation before processing

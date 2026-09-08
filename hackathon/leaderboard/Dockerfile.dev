@@ -9,7 +9,7 @@ RUN apk add --no-cache git
 WORKDIR /app
 
 # Copy package files
-COPY package*.json ./
+COPY package*.json package-lock.json ./
 
 # Install dependencies including devDependencies
 RUN npm ci

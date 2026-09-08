@@ -1,4 +1,11 @@
 terraform {
+  backend "azurerm" {
+    storage_account_name = "tfstategithubcopilot"
+    container_name       = "tfstategithubcopilot"
+    key                  = "prd.tfstategithubcopilot.tfstate"
+    resource_group_name  = "rg-githubcopilot"
+  }
+
   required_providers {
     azurerm = {
       source  = "hashicorp/azurerm"
@@ -20,21 +27,16 @@ resource "random_password" "session_secret" {
   special = true
 }
 
-resource "azurerm_resource_group" "main" {
-  name     = var.resource_group_name
-  location = var.location
-
-  lifecycle {
-    ignore_changes = [tags]
-  }
+data "azurerm_resource_group" "main" {
+  name = var.resource_group_name
 }
 
 resource "azurerm_container_registry" "main" {
-  name                = "acracaleaderboard${var.environment}"
-  resource_group_name = azurerm_resource_group.main.name
-  location            = azurerm_resource_group.main.location
-  sku                 = "Basic"
-  admin_enabled       = true
+  name                          = "acracaleaderboard${var.environment}"
+  resource_group_name           = data.azurerm_resource_group.main.name
+  location                      = data.azurerm_resource_group.main.location
+  sku                           = "Basic"
+  admin_enabled                 = true
   public_network_access_enabled = true
 
   lifecycle {
@@ -43,18 +45,18 @@ resource "azurerm_container_registry" "main" {
 }
 
 resource "azurerm_postgresql_flexible_server" "main" {
-  name                   = "psql-leaderboard-${var.environment}"
-  resource_group_name    = azurerm_resource_group.main.name
-  location               = azurerm_resource_group.main.location
-  version                = "14"
-  administrator_login    = var.postgresql_admin_username
-  administrator_password = var.postgresql_admin_password
-  zone                   = "1"
-  storage_mb             = 32768
-  sku_name               = "B_Standard_B1ms"
+  name                          = "psql-leaderboard-${var.environment}"
+  resource_group_name           = data.azurerm_resource_group.main.name
+  location                      = data.azurerm_resource_group.main.location
+  version                       = "14"
+  administrator_login           = var.postgresql_admin_username
+  administrator_password        = var.postgresql_admin_password
+  zone                          = "2"
+  storage_mb                    = 32768
+  sku_name                      = "B_Standard_B1ms"
   public_network_access_enabled = true
 
-  backup_retention_days = 7
+  backup_retention_days        = 7
   geo_redundant_backup_enabled = false
 
   lifecycle {
@@ -78,8 +80,8 @@ resource "azurerm_postgresql_flexible_server_firewall_rule" "azure_services" {
 
 resource "azurerm_storage_account" "main" {
   name                     = "stleaderboard${var.environment}"
-  resource_group_name      = azurerm_resource_group.main.name
-  location                 = azurerm_resource_group.main.location
+  resource_group_name      = data.azurerm_resource_group.main.name
+  location                 = data.azurerm_resource_group.main.location
   account_tier             = "Standard"
   account_replication_type = "LRS"
 
@@ -100,8 +102,8 @@ resource "azurerm_storage_container" "main" {
 
 resource "azurerm_log_analytics_workspace" "main" {
   name                = "log-leaderboard-${var.environment}"
-  location            = azurerm_resource_group.main.location
-  resource_group_name = azurerm_resource_group.main.name
+  location            = data.azurerm_resource_group.main.location
+  resource_group_name = data.azurerm_resource_group.main.name
   sku                 = "PerGB2018"
   retention_in_days   = 30
 
@@ -112,8 +114,8 @@ resource "azurerm_log_analytics_workspace" "main" {
 
 resource "azurerm_application_insights" "main" {
   name                = "appi-leaderboard-${var.environment}"
-  location            = azurerm_resource_group.main.location
-  resource_group_name = azurerm_resource_group.main.name
+  location            = data.azurerm_resource_group.main.location
+  resource_group_name = data.azurerm_resource_group.main.name
   workspace_id        = azurerm_log_analytics_workspace.main.id
   application_type    = "Node.JS"
 
@@ -126,8 +128,8 @@ resource "azurerm_application_insights" "main" {
 
 resource "azurerm_container_app_environment" "main" {
   name                       = "cae-leaderboard-${var.environment}"
-  location                   = azurerm_resource_group.main.location
-  resource_group_name        = azurerm_resource_group.main.name
+  location                   = data.azurerm_resource_group.main.location
+  resource_group_name        = data.azurerm_resource_group.main.name
   log_analytics_workspace_id = azurerm_log_analytics_workspace.main.id
 
   tags = {
@@ -142,7 +144,7 @@ resource "azurerm_container_app_environment" "main" {
 resource "azurerm_container_app" "main" {
   name                         = "ca-leaderboard-${var.environment}"
   container_app_environment_id = azurerm_container_app_environment.main.id
-  resource_group_name          = azurerm_resource_group.main.name
+  resource_group_name          = data.azurerm_resource_group.main.name
   revision_mode                = "Single"
 
   template {
@@ -151,7 +153,7 @@ resource "azurerm_container_app" "main" {
 
     container {
       name   = "leaderboard"
-      image  = var.container_image
+      image  = "${var.acr_login_server}/leaderboard:latest"
       cpu    = 0.5
       memory = "1Gi"
 
@@ -204,8 +206,8 @@ resource "azurerm_container_app" "main" {
   }
 
   registry {
-    server   = azurerm_container_registry.main.login_server
-    username = azurerm_container_registry.main.admin_username
+    server               = azurerm_container_registry.main.login_server
+    username             = azurerm_container_registry.main.admin_username
     password_secret_name = "registry-password"
   }
 

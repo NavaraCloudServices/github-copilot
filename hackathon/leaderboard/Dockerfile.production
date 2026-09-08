@@ -17,7 +17,7 @@ COPY server/ ./server/
 FROM node:20-alpine
 WORKDIR /app
 
-# Copy backend dependencies and source code
+# Copy backend source code
 COPY --from=backend-builder /app/node_modules ./node_modules
 COPY --from=backend-builder /app/server/ ./server
 
@@ -25,7 +25,7 @@ COPY --from=backend-builder /app/server/ ./server
 COPY --from=frontend-builder /app/client/dist ./server/public
 
 # Copy sample challenges file
-COPY sample-challenges.json ./
+#COPY /goals.json ./goals.json
 
 # Expose the port the app runs on
 EXPOSE 3000

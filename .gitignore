@@ -1,5 +1,10 @@
+#leaderboard
+/data/*
+
+
 terraform.tfstate
 terraform.tfstate.backup
+challenges.csv
 
 venv/
 *.lock.hcl
@@ -65,9 +70,6 @@ build/Release
 # Dependency directories
 node_modules/
 jspm_packages/
-
-# NPM lock file
-package-lock.json
 
 # Snowpack dependency directory (https://snowpack.dev/)
 web_modules/

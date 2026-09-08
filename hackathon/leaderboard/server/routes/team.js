@@ -216,25 +216,31 @@ router.get('/:teamId/progress', async (req, res, next) => {
     const leaderboard = await req.db.statements.getLeaderboard.get(team.leaderboard_id);
     const challenges = JSON.parse(leaderboard.challenges_json);
     
-    // Calculate progress stats
-    const totalChallenges = challenges.challenges?.length || 0;
-    const completedChallenges = completions.length;
-    const totalPossiblePoints = challenges.challenges?.reduce((sum, c) => sum + c.points, 0) || 0;
+    // Filter out disabled challenges from counting
+    const enabledChallenges = challenges.challenges?.filter(challenge => challenge.enabled !== false) || [];
+    
+    // Calculate progress stats (only counting enabled challenges)
+    const totalChallenges = enabledChallenges.length;
+    const completedChallenges = completions.filter(completion => {
+      const challenge = enabledChallenges.find(c => c.id === completion.challenge_id);
+      return challenge; // Only count completions for enabled challenges
+    }).length;
+    const totalPossiblePoints = enabledChallenges.reduce((sum, c) => sum + c.points, 0);
 
     // Get current rank
     const leaderboardData = await req.db.statements.getLeaderboardData.all(team.leaderboard_id);
     const currentRank = leaderboardData.find(t => t.id === teamId)?.rank || 0;
 
-    // Progress by category
+    // Progress by category (only considering enabled challenges)
     const categoryProgress = {};
     if (challenges.categories) {
       challenges.categories.forEach(category => {
         const categoryCompletions = completions.filter(completion => {
-          const challenge = challenges.challenges?.find(c => c.id === completion.challenge_id);
+          const challenge = enabledChallenges.find(c => c.id === completion.challenge_id);
           return challenge && challenge.category === category.id;
         });
         
-        const categoryChallenges = challenges.challenges?.filter(c => c.category === category.id) || [];
+        const categoryChallenges = enabledChallenges.filter(c => c.category === category.id);
         
         categoryProgress[category.id] = {
           name: category.name,

@@ -1,0 +1,72 @@
+{
+  "metadata": {
+    "title": "Test Hackathon with Enabled Property",
+    "description": "A test competition to verify the enabled property functionality",
+    "version": "1.0.0",
+    "total_points": 1000,
+    "duration_hours": 8
+  },
+  "categories": [
+    {
+      "id": "frontend",
+      "name": "Frontend Development",
+      "icon": "🎨",
+      "color": "#3B82F6"
+    },
+    {
+      "id": "backend",
+      "name": "Backend Development",
+      "icon": "⚙️",
+      "color": "#10B981"
+    }
+  ],
+  "challenges": [
+    {
+      "id": "challenge-1",
+      "category": "frontend",
+      "title": "Create a React Component",
+      "short_name": "React Component",
+      "description": "Build a reusable React component",
+      "skill_level": "Beginner",
+      "points": 100,
+      "enabled": true
+    },
+    {
+      "id": "challenge-2",
+      "category": "frontend",
+      "title": "Disabled CSS Challenge",
+      "short_name": "CSS Disabled",
+      "description": "This challenge is disabled and should not appear",
+      "skill_level": "Intermediate",
+      "points": 150,
+      "enabled": false
+    },
+    {
+      "id": "challenge-3",
+      "category": "backend",
+      "title": "Build an API",
+      "short_name": "API Development",
+      "description": "Create a REST API endpoint",
+      "skill_level": "Intermediate",
+      "points": 200,
+      "enabled": true
+    },
+    {
+      "id": "challenge-4",
+      "category": "backend",
+      "title": "Legacy Challenge Without Enabled Property",
+      "short_name": "Legacy Challenge",
+      "description": "This challenge doesn't have the enabled property, so it should default to enabled",
+      "skill_level": "Advanced",
+      "points": 300
+    }
+  ],
+  "resources": [
+    { "name": "Meta prompting technique", "url": "https://cookbook.openai.com/examples/enhance_your_prompts_with_meta_prompting" },
+    { "name": "Role prompting overview", "url": "https://learnprompting.org/docs/basics/roles" },
+    { "name": "React Documentation", "url": "https://react.dev/learn" },
+    { "name": "Node.js Best Practices", "url": "https://github.com/goldbergyoni/nodebestpractices" },
+    { "name": "JavaScript Guide - MDN", "url": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide" },
+    { "name": "GitHub Copilot Documentation", "url": "https://docs.github.com/en/copilot" }
+  ]
+}
